@@ -1,0 +1,51 @@
+﻿<Page
+    x:Class="App1.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:App1"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Viewbox Stretch="UniformToFill">
+            <Image x:Name="BackgroundImage" HorizontalAlignment="Center" Height="1080" VerticalAlignment="Center" Width="1920" Source="/Assets/WelcomeBackground.png" Stretch="UniformToFill"/>
+        </Viewbox>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="406*"/>
+                <ColumnDefinition Width="987*"/>
+                <ColumnDefinition Width="406*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="24*"/>
+                <RowDefinition Height="43*"/>
+                <RowDefinition Height="5*"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.ColumnSpan="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="40*"/>
+                    <ColumnDefinition Width="303*"/>
+                    <ColumnDefinition Width="40*"/>
+                </Grid.ColumnDefinitions>
+                <Viewbox Grid.Column="1">
+                    <TextBlock HorizontalAlignment="Center" Text="Welcome to Checkers!" VerticalAlignment="Center" FontSize="140" FontWeight="Bold" FontStyle="Italic" FocusVisualPrimaryBrush="#FFD4D4D4" Foreground="#FFD4D4D4" Grid.ColumnSpan="3" Height="186" Width="1441" Grid.Column="1"/>
+                </Viewbox>
+            </Grid>
+            <Viewbox Grid.Row="1" Grid.Column="1">
+                <Rectangle HorizontalAlignment="Stretch" Stretch="Fill" Height="562" Grid.Row="1" Stroke="Black" VerticalAlignment="Stretch" Width="970" RadiusX="51.7" RadiusY="51.7" Fill="#7F858585" FocusVisualPrimaryBrush="White" StrokeDashCap="Flat" StrokeThickness="0" Grid.Column="1"/>
+            </Viewbox>
+            <Grid Grid.Row="1" Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <TextBlock x:Name="findGame" HorizontalAlignment="Center" Text="Find game" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="72" FocusVisualPrimaryBrush="#FFD4D4D4" Foreground="#FFD4D4D4" FontWeight="Bold" FontStyle="Normal" PointerEntered="WelcomeMenuButtonOnFocus" FocusVisualSecondaryBrush="#99000000" PointerExited="WelcomeMenuButtonOffFocus" PointerPressed="WelcomeMenuButtonOnClick"/>
+                <TextBlock x:Name="settings" Grid.Row="1" Text="Settings" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="72" FocusVisualPrimaryBrush="#FFD4D4D4" Foreground="#FFD4D4D4" FontWeight="Bold" FontStyle="Normal" HorizontalAlignment="Center" PointerEntered="WelcomeMenuButtonOnFocus" PointerExited="WelcomeMenuButtonOffFocus" PointerPressed="WelcomeMenuButtonOnClick"/>
+                <TextBlock x:Name="exit" Grid.Row="2" Text="Quit" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="72" FocusVisualPrimaryBrush="#FFD4D4D4" Foreground="#FFD4D4D4" FontWeight="Bold" FontStyle="Normal" HorizontalAlignment="Center" PointerEntered="WelcomeMenuButtonOnFocus" PointerExited="WelcomeMenuButtonOffFocus" PointerPressed="WelcomeMenuButtonOnClick"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</Page>
