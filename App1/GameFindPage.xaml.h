@@ -1,20 +1,20 @@
 ﻿//
-// GamePage.xaml.h
-// Declaration of the GamePage class
+// GameFindPage.xaml.h
+// Declaration of the GameFindPage class
 //
 
 #pragma once
 
-#include "GamePage.g.h"
+#include "GameFindPage.g.h"
 
 namespace App1
 {
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	public ref class GamePage sealed
+	public ref class GameFindPage sealed
 	{
 	public:
-		GamePage();
+		GameFindPage();
 	};
 }

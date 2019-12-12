@@ -72,8 +72,8 @@ void App::OnLaunched(Windows::ApplicationModel::Activation::LaunchActivatedEvent
             Window::Current->Content = rootFrame;
             // Ensure the current window is active
             Window::Current->Activate();
-			auto appView = ApplicationView::GetForCurrentView();
-			appView->FullScreenSystemOverlayMode = FullScreenSystemOverlayMode::Minimal;
+			//auto appView = ApplicationView::GetForCurrentView();
+			//appView->FullScreenSystemOverlayMode = FullScreenSystemOverlayMode::Minimal;
 			//appView->TryEnterFullScreenMode();
 			
 		}

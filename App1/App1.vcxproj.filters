@@ -8,15 +8,12 @@
       <UniqueIdentifier>e24be403-c8c7-473b-8618-c272d10037bd</UniqueIdentifier>
       <Extensions>bmp;fbx;gif;jpg;jpeg;tga;tiff;tif;png</Extensions>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ApplicationDefinition Include="App.xaml" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="pch.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="pch.h" />
+    <Filter Include="UI">
+      <UniqueIdentifier>{f5dfbcde-cceb-42d7-979d-f9926b6149dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Logic">
+      <UniqueIdentifier>{d926c9d3-fb2f-4e41-9b94-9f2104a1d2dd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\LockScreenLogo.scale-200.png">
@@ -48,11 +45,54 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <AppxManifest Include="Package.appxmanifest" />
+    <Page Include="GameFindPage.xaml">
+      <Filter>UI</Filter>
+    </Page>
+    <Page Include="GamePage.xaml">
+      <Filter>UI</Filter>
+    </Page>
+    <Page Include="MainPage.xaml">
+      <Filter>UI</Filter>
+    </Page>
+    <Page Include="SettingsPage.xaml">
+      <Filter>UI</Filter>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="MainPage.xaml" />
-    <Page Include="GamePage.xaml" />
-    <Page Include="SettingsPage.xaml" />
+    <ApplicationDefinition Include="App.xaml">
+      <Filter>UI</Filter>
+    </ApplicationDefinition>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App1_TemporaryKey.pfx">
+      <Filter>UI</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <AppxManifest Include="Package.appxmanifest">
+      <Filter>UI</Filter>
+    </AppxManifest>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="Board.cpp">
+      <Filter>Logic</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="Board.h">
+      <Filter>Logic</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

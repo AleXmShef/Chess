@@ -4,7 +4,7 @@
 
 #include "pch.h"
 #include "MainPage.xaml.h"
-#include "GamePage.xaml.h"
+#include "GameFindPage.xaml.h"
 #include "SettingsPage.xaml.h"
 
 using namespace App1;
@@ -60,7 +60,7 @@ void App1::MainPage::WelcomeMenuButtonOnClick(Platform::Object^ sender, Windows:
 	}
 	else if (((TextBlock^)sender)->Name == "findGame") {
 		auto rootFrame = dynamic_cast<Windows::UI::Xaml::Controls::Frame^>(Window::Current->Content);
-		if (!rootFrame->Navigate(TypeName(GamePage::typeid))) {
+		if (!rootFrame->Navigate(TypeName(GameFindPage::typeid))) {
 			OutputDebugString(L"Failed to navigate to findGame screen\n");
 		}
 	}

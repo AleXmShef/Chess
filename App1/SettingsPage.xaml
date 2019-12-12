@@ -9,40 +9,38 @@
     Loaded="Page_Loaded"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
-        <Viewbox Stretch="UniformToFill">
-            <Image x:Name="BackgroundImage" HorizontalAlignment="Center" Height="1080" VerticalAlignment="Center" Width="1920" Source="/Assets/WelcomeBackground.png" Stretch="UniformToFill"/>
-        </Viewbox>
+    <Viewbox>
         <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="406*"/>
-                <ColumnDefinition Width="987*"/>
-                <ColumnDefinition Width="406*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="5*"/>
-                <RowDefinition Height="43*"/>
-                <RowDefinition Height="5*"/>
-            </Grid.RowDefinitions>
-            <Viewbox Grid.Row="1" Grid.Column="1">
-                <Rectangle HorizontalAlignment="Stretch" Grid.Row="1" Stroke="Black" VerticalAlignment="Stretch" RadiusX="51.7" RadiusY="51.7" Fill="#7F858585" FocusVisualPrimaryBrush="White" StrokeDashCap="Flat" StrokeThickness="0" Grid.Column="1" Width="970" Height="800"/>
-            </Viewbox>
-            <Grid Grid.Row="1" Grid.Column="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
+            <Image x:Name="BackgroundImage" HorizontalAlignment="Center" Height="1080" VerticalAlignment="Center" Width="1920" Source="/Assets/WelcomeBackground.png" Stretch="UniformToFill"/>
+            <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="302*"/>
-                    <ColumnDefinition Width="110*"/>
-                    <ColumnDefinition Width="115*"/>
+                    <ColumnDefinition Width="406*"/>
+                    <ColumnDefinition Width="987*"/>
+                    <ColumnDefinition Width="406*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock HorizontalAlignment="Left" Text="FullScreen" TextWrapping="Wrap" VerticalAlignment="Center" FontWeight="Bold" Foreground="#FFD4D4D4" FontSize="72" Margin="50,0,0,0"/>
-                <TextBlock x:Name="isFullScrn" HorizontalAlignment="Right" Text="Off" TextWrapping="Wrap" VerticalAlignment="Center" FontWeight="Bold" Grid.Column="3" Foreground="#FFD4D4D4" FontSize="72" Margin="0,0,50,0" PointerEntered="SettingsMenuButtonOnFocus" PointerExited="SettingsMenuButtonOffFocus" PointerPressed="SettingsMenuButtonOnClick"/>
-                <TextBlock x:Name="back" HorizontalAlignment="Left" Grid.Row="3" Text="Back" TextWrapping="Wrap" VerticalAlignment="Center" FontWeight="Bold" Foreground="#FFD4D4D4" FontSize="72" Margin="50,0,50,0" PointerEntered="SettingsMenuButtonOnFocus" PointerExited="SettingsMenuButtonOffFocus" PointerPressed="SettingsMenuButtonOnClick"/>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="5*"/>
+                    <RowDefinition Height="43*"/>
+                    <RowDefinition Height="5*"/>
+                </Grid.RowDefinitions>
+                <Rectangle Stroke="Black" RadiusX="51.7" RadiusY="51.7" Fill="#7F858585" FocusVisualPrimaryBrush="White" StrokeDashCap="Flat" StrokeThickness="0" Grid.Column="1" Margin="0,0,0,9" Grid.Row="1"/>
+                <Grid Grid.Row="1" Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="219*" />
+                        <RowDefinition Height="219*" />
+                        <RowDefinition Height="219*" />
+                        <RowDefinition Height="218*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="302*"/>
+                        <ColumnDefinition Width="110*"/>
+                        <ColumnDefinition Width="115*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock HorizontalAlignment="Left" Text="FullScreen" TextWrapping="Wrap" VerticalAlignment="Center" FontWeight="Bold" Foreground="#FFD4D4D4" FontSize="90" Margin="50,0,0,0"/>
+                    <TextBlock x:Name="isFullScrn" HorizontalAlignment="Right" Text="Off" TextWrapping="Wrap" VerticalAlignment="Center" FontWeight="Bold" Grid.Column="3" Foreground="#FFD4D4D4" FontSize="90" Margin="0,0,50,0" PointerEntered="SettingsMenuButtonOnFocus" PointerExited="SettingsMenuButtonOffFocus" PointerPressed="SettingsMenuButtonOnClick"/>
+                    <TextBlock x:Name="back" HorizontalAlignment="Left" Grid.Row="3" Text="Back" TextWrapping="Wrap" VerticalAlignment="Center" FontWeight="Bold" Foreground="#FFD4D4D4" FontSize="90" Margin="50,0,50,0" PointerEntered="SettingsMenuButtonOnFocus" PointerExited="SettingsMenuButtonOffFocus" PointerPressed="SettingsMenuButtonOnClick"/>
+                </Grid>
             </Grid>
         </Grid>
-    </Grid>
+    </Viewbox>
 </Page>

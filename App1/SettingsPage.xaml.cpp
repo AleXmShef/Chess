@@ -64,11 +64,13 @@ void SettingsPage::SettingsMenuButtonOnClick(Platform::Object^ sender, Windows::
 		auto appView = ApplicationView::GetForCurrentView();
 		if (!appView->IsFullScreen) {
 			if (appView->TryEnterFullScreenMode()) {
+				appView->PreferredLaunchWindowingMode = ApplicationViewWindowingMode::FullScreen;
 				this->isFullScrn->Text = L"On";
 			}
 		}
 		else {
 			appView->ExitFullScreenMode();
+			appView->PreferredLaunchWindowingMode = ApplicationViewWindowingMode::Auto;
 			this->isFullScrn->Text = L"Off";
 		}
 	}
