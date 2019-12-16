@@ -8,6 +8,7 @@ using namespace Windows::Foundation;
 using namespace Windows::Networking;
 using namespace Windows::Networking::Connectivity;
 using namespace Windows::Security::Cryptography;
+using namespace concurrency;
 
 namespace App1 {
 	ref class Game sealed

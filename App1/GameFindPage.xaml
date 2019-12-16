@@ -45,7 +45,7 @@
                     </ListView>
                 </Grid>
             </Grid>
-            <Button x:Name="testbutton" Content="Button" Margin="754,116,0,0" VerticalAlignment="Top" Height="109" Width="334" FontSize="70" PointerPressed="sendRequest"/>
+            <Button x:Name="testbutton" Content="Button" Margin="754,116,0,0" VerticalAlignment="Top" Height="109" Width="334" FontSize="70" Click="buttonPressed"/>
         </Grid>
     </Viewbox>
 </Page>

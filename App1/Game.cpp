@@ -55,7 +55,17 @@ void Game::sendRequest() {
 void Game::helloListenerThread() {
 	auto myListener = ref new Sockets::StreamSocketListener();
 	myListener->ConnectionReceived += ref new TypedEventHandler<Sockets::StreamSocketListener^, Sockets::StreamSocketListenerConnectionReceivedEventArgs^>(this, &Game::respond);
-	myListener->BindServiceNameAsync(L"8081");
+	auto icp = NetworkInformation::GetInternetConnectionProfile();
+	auto hostnames = NetworkInformation::GetHostNames();
+	HostName^ myHostname;
+	for each (HostName ^ hostname in hostnames)
+	{
+		if (hostname->Type == HostNameType::Ipv4
+			&& hostname->IPInformation->NetworkAdapter != nullptr
+			&& hostname->IPInformation->NetworkAdapter->NetworkAdapterId == icp->NetworkAdapter->NetworkAdapterId)
+			myHostname = hostname;
+	}
+	myListener->BindEndpointAsync(myHostname, L"8081");
 }
 
 void Game::respond(Sockets::StreamSocketListener^ socket, Sockets::StreamSocketListenerConnectionReceivedEventArgs^ args) {

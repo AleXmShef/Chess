@@ -35,7 +35,7 @@ GameFindPage::GameFindPage()
 }
 
 
-void App1::GameFindPage::sendRequest(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ e)
+void App1::GameFindPage::buttonPressed(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
 	_mGame->sendRequest();
 }
