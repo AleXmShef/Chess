@@ -32,5 +32,10 @@ GameFindPage::GameFindPage()
 	}
 	//auto str = _mGame->getLocalhost();
 	_mGame->helloListenerThread();
+}
+
+
+void App1::GameFindPage::sendRequest(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ e)
+{
 	_mGame->sendRequest();
 }

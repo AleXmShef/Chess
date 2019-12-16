@@ -19,5 +19,6 @@ namespace App1
 		GameFindPage();
 	private:
 		Game^ _mGame;
+		void sendRequest(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ e);
 	};
 }
