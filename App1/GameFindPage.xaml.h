@@ -6,6 +6,7 @@
 #pragma once
 
 #include "GameFindPage.g.h"
+#include "Game.h"
 
 namespace App1
 {
@@ -16,5 +17,7 @@ namespace App1
 	{
 	public:
 		GameFindPage();
+	private:
+		Game^ _mGame;
 	};
 }

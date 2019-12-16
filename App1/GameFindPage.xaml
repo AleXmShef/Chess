@@ -41,9 +41,6 @@
                             </DataTemplate>
                         </ListView.ItemTemplate>
                         <ListView.Items>
-                            <x:String>123</x:String>
-                            <x:String>123</x:String>
-                            <x:String>123</x:String>
                         </ListView.Items>
                     </ListView>
                 </Grid>

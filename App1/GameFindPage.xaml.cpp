@@ -24,6 +24,13 @@ using namespace Windows::UI::Xaml::Navigation;
 GameFindPage::GameFindPage()
 {
 	InitializeComponent();
-	auto str = ref new Platform::String(L"test");
-	this->userList->Items->Append(str);
+	try {
+		_mGame = Game::getInstance();
+	}
+	catch (Exception^ e) {
+		///TODO
+	}
+	//auto str = _mGame->getLocalhost();
+	_mGame->helloListenerThread();
+	_mGame->sendRequest();
 }
