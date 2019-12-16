@@ -47,20 +47,21 @@ void Game::sendRequest() {
 	mySocket->ConnectAsync(serverHost, L"8081");
 	auto request = ref new String(L"hello");
 	auto stream = mySocket->OutputStream;
-	stream->WriteAsync(request->Data);
+	auto req = CryptographicBuffer::ConvertStringToBinary(request, BinaryStringEncoding::Utf8);
+	stream->WriteAsync(req);
 	stream->FlushAsync();
 };
 
 void Game::helloListenerThread() {
 	auto myListener = ref new Sockets::StreamSocketListener();
-	myListener->ConnectionReceived += this->respond;
+	myListener->ConnectionReceived += ref new TypedEventHandler<Sockets::StreamSocketListener^, Sockets::StreamSocketListenerConnectionReceivedEventArgs^>(this, &Game::respond);
 	myListener->BindServiceNameAsync(L"8081");
 }
 
-void Game::respond(Sockets::StreamSocketListener socket, Sockets::StreamSocketListenerConnectionReceivedEventArgs args) {
-	auto stream = args.Socket->InputStream;
+void Game::respond(Sockets::StreamSocketListener^ socket, Sockets::StreamSocketListenerConnectionReceivedEventArgs^ args) {
+	auto stream = args->Socket->InputStream;
 	auto request = ref new String();
-	auto request = stream->ToString();
+	request = stream->ToString();
 	std::wstring req(request->Begin());
 	OutputDebugString(req.c_str());
 }
