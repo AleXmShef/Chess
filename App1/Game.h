@@ -6,8 +6,10 @@ using namespace Platform;
 using namespace Platform::Collections;
 using namespace Windows::Foundation;
 using namespace Windows::Networking;
+using namespace Windows::ApplicationModel::Core;
 using namespace Windows::Networking::Connectivity;
 using namespace Windows::Security::Cryptography;
+using namespace Windows::Storage::Streams;
 using namespace concurrency;
 
 namespace App1 {

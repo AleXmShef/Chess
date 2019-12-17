@@ -34,7 +34,6 @@ GameFindPage::GameFindPage()
 	_mGame->helloListenerThread();
 }
 
-
 void App1::GameFindPage::buttonPressed(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
 	_mGame->sendRequest();

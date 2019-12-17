@@ -16,7 +16,7 @@ Game::Game() {
 }
 
 void Game::Init() {
-	_localhost = getMyIP();
+	//_localhost = getMyIP();
 }
 
 std::string Game::getMyIP() {
@@ -42,22 +42,9 @@ String^ Game::getLocalhost() {
 }
 
 void Game::sendRequest() {
-	auto mySocket = ref new Sockets::StreamSocket();
-	auto serverHost = ref new HostName("192.168.1.218");
-	mySocket->ConnectAsync(serverHost, L"8081");
-	auto request = ref new String(L"hello");
-	auto stream = mySocket->OutputStream;
-	auto req = CryptographicBuffer::ConvertStringToBinary(request, BinaryStringEncoding::Utf8);
-	stream->WriteAsync(req);
-	stream->FlushAsync();
-};
-
-void Game::helloListenerThread() {
-	auto myListener = ref new Sockets::StreamSocketListener();
-	myListener->ConnectionReceived += ref new TypedEventHandler<Sockets::StreamSocketListener^, Sockets::StreamSocketListenerConnectionReceivedEventArgs^>(this, &Game::respond);
 	auto icp = NetworkInformation::GetInternetConnectionProfile();
 	auto hostnames = NetworkInformation::GetHostNames();
-	HostName^ myHostname;
+	HostName^ myHostname = nullptr;
 	for each (HostName ^ hostname in hostnames)
 	{
 		if (hostname->Type == HostNameType::Ipv4
@@ -65,13 +52,51 @@ void Game::helloListenerThread() {
 			&& hostname->IPInformation->NetworkAdapter->NetworkAdapterId == icp->NetworkAdapter->NetworkAdapterId)
 			myHostname = hostname;
 	}
-	myListener->BindEndpointAsync(myHostname, L"8081");
+	auto socket = ref new Sockets::StreamSocket();
+	socket->Control->KeepAlive = false;
+	CoreApplication::Properties->Insert("clientSocket", socket);
+	create_task(socket->ConnectAsync(
+		myHostname,
+		"22112",
+		Sockets::SocketProtectionLevel::PlainSocket)).then([this](task<void> previousTask) {
+		try {
+			previousTask.get();
+		}
+		catch (Exception^ e) {
+			OutputDebugString(L"Failed to connect\n");
+		}
+		}
+	);
+};
+
+void Game::helloListenerThread() {
+	auto icp = NetworkInformation::GetInternetConnectionProfile();
+	auto hostnames = NetworkInformation::GetHostNames();
+	HostName^ myHostname = nullptr;
+	for each (HostName ^ hostname in hostnames)
+	{
+		if (hostname->Type == HostNameType::Ipv4
+			&& hostname->IPInformation->NetworkAdapter != nullptr
+			&& hostname->IPInformation->NetworkAdapter->NetworkAdapterId == icp->NetworkAdapter->NetworkAdapterId)
+			myHostname = hostname;
+	}
+	auto listener = ref new Sockets::StreamSocketListener();
+	listener->ConnectionReceived += ref new TypedEventHandler<Sockets::StreamSocketListener^, Sockets::StreamSocketListenerConnectionReceivedEventArgs^>(this, &Game::respond);
+	listener->Control->KeepAlive = false;
+	CoreApplication::Properties->Insert("listener", listener);
+	create_task(listener->BindEndpointAsync(myHostname, "22112")).then([this](task<void> previousTask) {
+		try {
+			previousTask.get();
+			OutputDebugString(L"Listening on port 22112\n");
+		}
+		catch (Exception ^ e) {
+			OutputDebugString(L"Unable to listen\n");
+		}
+	
+	});
 }
 
 void Game::respond(Sockets::StreamSocketListener^ socket, Sockets::StreamSocketListenerConnectionReceivedEventArgs^ args) {
-	auto stream = args->Socket->InputStream;
-	auto request = ref new String();
-	request = stream->ToString();
-	std::wstring req(request->Begin());
-	OutputDebugString(req.c_str());
+	auto reader = ref new DataReader(args->Socket->InputStream);
+	OutputDebugString(L"Test\n");
 }
