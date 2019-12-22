@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
-#include "GameFindPage.xaml.h"
+#include "GameFindPage.g.h"
 #include "Board.h"
 
 using namespace Platform;
