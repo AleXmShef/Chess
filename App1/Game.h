@@ -1,7 +1,8 @@
 #pragma once
+#include "pch.h"
+#include "GameFindPage.g.h"
 #include <string>
 #include <vector>
-#include "GameFindPage.g.h"
 #include "Board.h"
 
 using namespace Platform;

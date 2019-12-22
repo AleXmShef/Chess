@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "GameFindPage.xaml.h"
 #include "Game.h"
 
 using namespace App1;
