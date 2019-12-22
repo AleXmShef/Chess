@@ -5,6 +5,7 @@
 #include "pch.h"
 #include "MainPage.xaml.h"
 #include "GameFindPage.xaml.h"
+#include "GamePage.xaml.h"
 #include "SettingsPage.xaml.h"
 
 using namespace App1;

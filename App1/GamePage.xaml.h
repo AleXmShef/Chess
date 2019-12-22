@@ -6,6 +6,12 @@
 #pragma once
 
 #include "GamePage.g.h"
+#include "Game.h"
+#include "Board.h"
+#include <vector>
+
+using namespace Platform::Collections;
+using namespace Windows::UI::Xaml::Controls;
 
 namespace App1
 {
@@ -16,5 +22,9 @@ namespace App1
 	{
 	public:
 		GamePage();
+	private:
+		Game^ mGame;
+		void populateBoard();
+		std::vector<std::vector<Image^>*>* mBoardVector;
 	};
 }
