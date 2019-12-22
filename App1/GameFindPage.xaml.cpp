@@ -61,14 +61,7 @@ void App1::GameFindPage::FindMenuButtonOffFocus(Platform::Object^ sender, Window
 }
 
 void App1::GameFindPage::showInvitationDialog() {
-	create_task(this->InvitationDialog->ShowAsync()).then([this](ContentDialogResult result)
-		{
-			if (result == ContentDialogResult::Primary) {
-				_mGame->acceptInvitation();
-			}
-			else
-				_mGame->declineInvitation();
-		});
+	this->acceptInviteButton->Visibility = Windows::UI::Xaml::Visibility::Visible;
 }
 
 void App1::GameFindPage::FindMenuButtonOnClick(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ e)
@@ -83,4 +76,10 @@ void App1::GameFindPage::FindMenuButtonOnClick(Platform::Object^ sender, Windows
 			OutputDebugString(L"Failed to navigate to main screen\n");
 		}
 	}
+}
+
+
+void App1::GameFindPage::AcceptInvitation(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ e)
+{
+	_mGame->acceptInvitation;
 }
