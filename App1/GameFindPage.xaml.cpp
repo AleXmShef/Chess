@@ -11,7 +11,10 @@ using namespace App1;
 using namespace Platform;
 using namespace Windows::Foundation;
 using namespace Windows::Foundation::Collections;
+using namespace Windows::UI;
+using namespace Windows;
 using namespace Windows::UI::Xaml;
+using namespace Windows::UI::Xaml::Interop;
 using namespace Windows::UI::Xaml::Controls;
 using namespace Windows::UI::Xaml::Controls::Primitives;
 using namespace Windows::UI::Xaml::Data;
@@ -30,11 +33,44 @@ GameFindPage::GameFindPage()
 	catch (Exception^ e) {
 		///TODO
 	}
-	//auto str = _mGame->getLocalhost();
-	_mGame->helloListenerThread();
+	_mGame->registerFindPage(this);
+	ipTextBlock->Text = _mGame->getStringIP();
 }
 
-void App1::GameFindPage::buttonPressed(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+void App1::GameFindPage::FindMenuButtonOnFocus(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ e)
 {
-	_mGame->sendRequest();
+	Color color;
+	color.R = 255;
+	color.G = 114;
+	color.B = 54;
+	color.A = 255;
+	auto brush = ref new SolidColorBrush(color);
+	((TextBlock^)sender)->Foreground = brush;
+}
+
+
+void App1::GameFindPage::FindMenuButtonOffFocus(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ e)
+{
+	Color color;
+	color.R = 212;
+	color.G = 212;
+	color.B = 212;
+	color.A = 255;
+	auto brush = ref new SolidColorBrush(color);
+	((TextBlock^)sender)->Foreground = brush;
+}
+
+
+void App1::GameFindPage::FindMenuButtonOnClick(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ e)
+{
+	if (((TextBlock^)sender)->Name == "sendInvite") {
+		OutputDebugString(L"Sending Invite\n");
+		_mGame->sendInvitation(ipUserInput->Text);
+	}
+	else if (((TextBlock^)sender)->Name == "back") {
+		auto rootFrame = dynamic_cast<Windows::UI::Xaml::Controls::Frame^>(Window::Current->Content);
+		if (!rootFrame->Navigate(TypeName(MainPage::typeid))) {
+			OutputDebugString(L"Failed to navigate to main screen\n");
+		}
+	}
 }

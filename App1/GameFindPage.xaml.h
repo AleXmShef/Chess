@@ -6,6 +6,7 @@
 #pragma once
 
 #include "GameFindPage.g.h"
+#include "MainPage.xaml.h"
 #include "Game.h"
 
 namespace App1
@@ -20,5 +21,8 @@ namespace App1
 	private:
 		Game^ _mGame;
 		void buttonPressed(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+		void FindMenuButtonOnFocus(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ e);
+		void FindMenuButtonOffFocus(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ e);
+		void FindMenuButtonOnClick(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ e);
 	};
 }

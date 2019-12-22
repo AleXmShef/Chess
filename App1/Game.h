@@ -1,10 +1,13 @@
 #pragma once
 #include <string>
 #include <vector>
+#include "GameFindPage.g.h"
+#include "Board.h"
 
 using namespace Platform;
 using namespace Platform::Collections;
 using namespace Windows::Foundation;
+using namespace Windows::Data::Json;
 using namespace Windows::Networking;
 using namespace Windows::ApplicationModel::Core;
 using namespace Windows::Networking::Connectivity;
@@ -13,22 +16,29 @@ using namespace Windows::Storage::Streams;
 using namespace concurrency;
 
 namespace App1 {
+	enum gameStatus { Idle, GameStart, MyMove, NotMyMove };
 	ref class Game sealed
 	{
 	public:
-		Game();
 		static Game^ getInstance();
-		String^ getLocalhost();
-		void sendRequest();
-		void helloListenerThread();
+		String^ getStringIP();
+		void sendInvitation(String^ serverHost);
+		void registerFindPage(GameFindPage^ page);
+	public:
+		gameStatus mGameStatus = Idle;
 	private:
+		Game();
 		void Init();
-		std::string getMyIP();
-		void networkScanThread();
-		void respond(Sockets::StreamSocketListener^ socket, Sockets::StreamSocketListenerConnectionReceivedEventArgs^ args);
+		void getLocalhost();
+		void startServer();
+		void serverOnConnectHandler(Sockets::StreamSocketListener^ socket, Sockets::StreamSocketListenerConnectionReceivedEventArgs^ args);
+		void serverRequestHandler(DataReader^ reader, Sockets::StreamSocket^ socket);
 	private:
-		std::string _localhost;
-		std::vector<std::string> _availablePlayers;
+		GameFindPage^ mGameFindPage;
+		HostName^ mLocalhost;
+		Board^ mBoard;
+		Sockets::StreamSocketListener^ mServerSocket;
+		Sockets::StreamSocket^ mClientSocket;
 		static Game^ mInstance;
 	};
 }

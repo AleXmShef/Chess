@@ -1,5 +1,5 @@
 #pragma once
-class Board
+ref class Board sealed
 {
 
 };
