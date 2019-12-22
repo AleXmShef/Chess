@@ -9,6 +9,7 @@ using namespace Platform;
 using namespace Platform::Collections;
 using namespace Windows::Foundation;
 using namespace Windows::Data::Json;
+using namespace Windows::UI::Core;
 using namespace Windows::Networking;
 using namespace Windows::ApplicationModel::Core;
 using namespace Windows::Networking::Connectivity;

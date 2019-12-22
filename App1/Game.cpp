@@ -176,10 +176,16 @@ JsonObject^ Game::requestHandler(JsonObject^ jsonRequest) {
 	auto requestType = jsonRequest->GetNamedString("requestType");
 	if (requestType == "GameInvite") {
 		if (mGameFindPage) {
-			bool result = mGameFindPage->showInvitationDialog();
-			if (result) {
-				OutputDebugString(L"FuckYeah");
-			}
+			auto result = new bool();
+				create_task(mGameFindPage->Dispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([this, result]()
+					{
+						this->mGameFindPage->showInvitationDialog(result);
+					}))).then([this, result]()
+					{
+						if (result) {
+							OutputDebugString(L"FuckYeah");
+						};
+					});
 		}
 	}
 	else if (requestType == "WhichSide") {
@@ -200,5 +206,5 @@ JsonObject^ Game::requestHandler(JsonObject^ jsonRequest) {
 }
 
 void Game::registerFindPage(GameFindPage^ page) {
-	//mGameFindPage = page;
+	mGameFindPage = page;
 }
