@@ -25,13 +25,16 @@
                 </Grid.RowDefinitions>
                 <TextBlock HorizontalAlignment="Center" Text="Your IP address:" VerticalAlignment="Top" FontSize="90" FontWeight="Bold" FontStyle="Italic" FocusVisualPrimaryBrush="#FFD4D4D4" Foreground="#FFD4D4D4" Height="140" Width="703" Margin="0,46,0,0" Grid.Column="1"/>
                 <TextBox x:Name="ipUserInput" HorizontalAlignment="Center" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Row="1" Grid.Column="1" Height="140" Width="700" FontSize="90" FontStyle="Italic" FontWeight="Bold" Foreground="#FFD4D4D4" PlaceholderText="Specify IP" FocusVisualPrimaryBrush="#99FFFFFF"/>
-                <TextBlock x:Name="acceptInviteButton" HorizontalAlignment="Center" Text="Accept invite" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="90" FocusVisualPrimaryBrush="#FFD4D4D4" Foreground="#FFD4D4D4" FontWeight="Bold" FontStyle="Normal" PointerEntered="FindMenuButtonOnFocus" FocusVisualSecondaryBrush="#99000000" PointerExited="FindMenuButtonOffFocus" PointerPressed="AcceptInvitation" Grid.Row="1" Grid.Column="1" Margin="0,265,0,0" Visibility="Collapsed"/>
-                <TextBlock x:Name="sendInvite" HorizontalAlignment="Center" Text="Find game" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="90" FocusVisualPrimaryBrush="#FFD4D4D4" Foreground="#FFD4D4D4" FontWeight="Bold" FontStyle="Normal" PointerEntered="FindMenuButtonOnFocus" FocusVisualSecondaryBrush="#99000000" PointerExited="FindMenuButtonOffFocus" PointerPressed="FindMenuButtonOnClick" Grid.Row="1" Grid.Column="1" Margin="0,135,0,0"/>
+                <TextBlock x:Name="sendInvite" HorizontalAlignment="Center" Text="Find game" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="90" FocusVisualPrimaryBrush="#FFD4D4D4" Foreground="#FFD4D4D4" FontWeight="Bold" FontStyle="Normal" PointerEntered="FindMenuButtonOnFocus" FocusVisualSecondaryBrush="#99000000" PointerExited="FindMenuButtonOffFocus" PointerPressed="FindMenuButtonOnClick" Grid.Row="1" Grid.Column="1" Margin="0,190,0,0"/>
                 <TextBlock x:Name="ipTextBlock" HorizontalAlignment="Center" Text="" VerticalAlignment="Top" FontSize="90" FontWeight="Bold" FontStyle="Italic" FocusVisualPrimaryBrush="#FFD4D4D4" Foreground="#FFD4D4D4" Height="135" Width="700" Margin="0,208,0,0" Grid.Column="1"/>
                 <TextBlock x:Name="back" HorizontalAlignment="Center" Text="Back" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="90" FocusVisualPrimaryBrush="#FFD4D4D4" Foreground="#FFD4D4D4" FontWeight="Bold" FontStyle="Normal" PointerEntered="FindMenuButtonOnFocus" FocusVisualSecondaryBrush="#99000000" PointerExited="FindMenuButtonOffFocus" PointerPressed="FindMenuButtonOnClick" Grid.Row="2" Grid.Column="1"/>
                 
             </Grid>
-            
+            <ContentDialog x:Name="InvitationDialog" PrimaryButtonText="Accept" CloseButtonText="Decline" Background="#FFA0A0A0">
+                <TextBlock FontWeight="Bold" FontStyle="Normal" HorizontalAlignment="Center" FocusVisualPrimaryBrush="Black" Foreground="White" FontSize="24">
+                    You recieved an invitation
+                </TextBlock>
+            </ContentDialog>
         </Grid>
     </Viewbox>
 </Page>
