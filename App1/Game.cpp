@@ -53,6 +53,9 @@ void Game::sendInvitation(String^ serverHost) {
 		try {
 			previousTask.get();
 			mSocket = socket;
+			auto requestJson = ref new JsonObject();
+			requestJson->Insert("requestType", JsonValue::CreateStringValue("GameInvite"));
+			sendJson(requestJson, mSocket);
 			recieveJson(mSocket).then([this](JsonObject^ responseJson)
 				{
 					responseHandler(responseJson);
@@ -85,7 +88,7 @@ void Game::serverOnConnectHandler(Sockets::StreamSocketListener^ socket, Sockets
 	mSocket = args->Socket;
 	recieveJson(mSocket).then([this](JsonObject^ requestJson)
 		{
-			sendJson(requestHandler(requestJson), mSocket);
+			requestHandler(requestJson);
 			serverRequestHandler();
 		});
 	OutputDebugString(L"Recieved connection\n");
@@ -108,26 +111,28 @@ JsonObject^ Game::requestHandler(JsonObject^ jsonRequest) {
 	if (requestType == "GameInvite") {
 		if (mGameFindPage) {
 			auto result = new bool();
-				create_task(mGameFindPage->Dispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([this, result]()
-					{
-						this->mGameFindPage->showInvitationDialog(result);
-					}))).then([this, result]()
+			create_task(mGameFindPage->Dispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([this, result]()
+				{
+					this->mGameFindPage->showInvitationDialog(result);
+				}))).then([this, result]()
 					{
 						if (result) {
 							//confirm invitation
 							mGameStatus = gameStatus::InviteAccepted;
 							auto responseJson = ref new JsonObject();
 							responseJson->Insert("responseType", JsonValue::CreateStringValue("GameInviteAccept"));
-							return responseJson;
-							auto rootFrame = dynamic_cast<Windows::UI::Xaml::Controls::Frame^>(Window::Current->Content);
-							if (!rootFrame->Navigate(TypeName(GamePage::typeid))) {
-								OutputDebugString(L"Failed to navigate to findGame screen\n");
-							}
+							sendJson(responseJson, mSocket);
+							mGameFindPage->Dispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([this, result]() {
+								auto rootFrame = dynamic_cast<Windows::UI::Xaml::Controls::Frame^>(Window::Current->Content);
+								if (!rootFrame->Navigate(TypeName(GamePage::typeid))) {
+									OutputDebugString(L"Failed to navigate to findGame screen\n");
+								}
+							}));
 						}
 						else {
 							auto responseJson = ref new JsonObject();
 							responseJson->Insert("responseType", JsonValue::CreateStringValue("GameInviteDecline"));
-							return responseJson;
+							sendJson(responseJson, mSocket);
 						}
 					});
 		}
@@ -157,10 +162,12 @@ void Game::responseHandler(JsonObject^ jsonResponse) {
 	if (responseType == "GameInviteAccept") {
 		mGameStatus = gameStatus::InviteAccepted;
 
-		auto rootFrame = dynamic_cast<Windows::UI::Xaml::Controls::Frame^>(Window::Current->Content);
-		if (!rootFrame->Navigate(TypeName(GamePage::typeid))) {
-			OutputDebugString(L"Failed to navigate to findGame screen\n");
-		}
+		mGameFindPage->Dispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([this, result]() {
+			auto rootFrame = dynamic_cast<Windows::UI::Xaml::Controls::Frame^>(Window::Current->Content);
+			if (!rootFrame->Navigate(TypeName(GamePage::typeid))) {
+				OutputDebugString(L"Failed to navigate to findGame screen\n");
+			}
+		}));
 	}
 	if (responseType == "GameInviteDecline") {
 
@@ -183,17 +190,14 @@ gameStatus Game::getGameStatus() {
 
 void Game::sendJson(JsonObject^ jsonParam, Sockets::StreamSocket^ socket) {
 	auto writer = ref new DataWriter(socket->OutputStream);
-	auto helloJson = jsonParam;
-	auto jsonString = helloJson->Stringify();
+	auto jsonString = jsonParam->Stringify();
 	writer->WriteUInt32(writer->MeasureString(jsonString));
 	writer->WriteString(jsonString);
-	create_task(writer->StoreAsync()).then([this, socket, jsonString, writer](task<unsigned int> writeTask)
+	create_task(writer->StoreAsync()).then([this, socket](task<unsigned int> writeTask)
 		{
 			try {
 				writeTask.get();
 				OutputDebugString(L"Json sent successfully");
-				auto reader = ref new DataReader(socket->InputStream);
-				clientResponseHandler(reader, writer, socket);
 			}
 			catch (Exception ^ e) {
 				OutputDebugString(L"Failed to send json");
@@ -204,38 +208,39 @@ void Game::sendJson(JsonObject^ jsonParam, Sockets::StreamSocket^ socket) {
 
 task<JsonObject^> Game::recieveJson(Sockets::StreamSocket^ socket) {
 	auto reader = ref new DataReader(socket->InputStream);
-	auto mJson = ref new JsonObject();
-	return create_task(reader->LoadAsync(sizeof(UINT32))).then([this, reader, socket, mJson](unsigned int size)
+	return create_task(reader->LoadAsync(sizeof(UINT32))).then([this, reader, socket](unsigned int size)
 		{
 			if (size < sizeof(UINT32)) {
 				OutputDebugString(L"Socket was closed before reading was complete\n");
-				//cancel_current_task();
+				cancel_current_task();
 			}
 			unsigned int stringLength = reader->ReadUInt32();
-			return create_task(reader->LoadAsync(stringLength)).then([this, reader, socket, stringLength, mJson](unsigned int actualStringLength)
+			return create_task(reader->LoadAsync(stringLength)).then([this, reader, socket, stringLength](unsigned int actualStringLength)
 				{
 					if (actualStringLength != stringLength) {
 						OutputDebugString(L"Socket was closed before reading was complete\n");
-						//cancel_current_task();
+						cancel_current_task();
 					}
 					//auto myJson = ref new JsonObject();
 					auto jsonString = reader->ReadString(actualStringLength);
 					auto mJson = ref new JsonObject();
 					mJson->TryParse(jsonString, &mJson);
-				});
-		}).then([this, socket, mJson](task<void> previousTask)
-			{
-				try {
-					previousTask.get();
+					auto str = mJson->Stringify();
 					return mJson;
-				}
-				catch (Exception ^ e) {
-					OutputDebugString(L"Unknown error\n");
-					delete socket;
-				}
-				catch (task_canceled&) {
-					OutputDebugString(L"Unknown error\n");
-					delete socket;
-				}
-			});
+				}).then([this, socket](JsonObject^ mJson)
+					{
+						try {
+							//previousTask.get();
+							return mJson;
+						}
+						catch (Exception ^ e) {
+							OutputDebugString(L"Unknown error\n");
+							delete socket;
+						}
+						catch (task_canceled&) {
+							OutputDebugString(L"Unknown error\n");
+							delete socket;
+						}
+					});
+		});
 }
