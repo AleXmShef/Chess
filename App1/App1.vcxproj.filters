@@ -67,6 +67,7 @@
     <None Include="App1_TemporaryKey.pfx">
       <Filter>UI</Filter>
     </None>
+    <None Include="Chess_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">

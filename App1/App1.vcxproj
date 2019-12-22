@@ -125,9 +125,10 @@
     <GenerateTestArtifacts>True</GenerateTestArtifacts>
     <AppxBundlePlatforms>x64</AppxBundlePlatforms>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
-    <PackageCertificateThumbprint>C5D046EF3CB3C23B1C23053AC45771D64AF83196</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>26B31AF2C1BD01620A3BABF79824589EFBBE823B</PackageCertificateThumbprint>
     <AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
     <AppxBundle>Never</AppxBundle>
+    <PackageCertificateKeyFile>Chess_TemporaryKey.pfx</PackageCertificateKeyFile>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <ClCompile>
@@ -261,6 +262,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App1_TemporaryKey.pfx" />
+    <None Include="Chess_TemporaryKey.pfx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

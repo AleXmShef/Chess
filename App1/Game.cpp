@@ -17,6 +17,7 @@ Game::Game() {
 
 void Game::Init() {
 	getLocalhost();
+	startServer();
 }
 
 void Game::getLocalhost() {
@@ -90,6 +91,7 @@ void Game::startServer() {
 
 void Game::serverOnConnectHandler(Sockets::StreamSocketListener^ socket, Sockets::StreamSocketListenerConnectionReceivedEventArgs^ args) {
 	auto reader = ref new DataReader(args->Socket->InputStream);
+	serverRequestHandler(reader, args->Socket);
 	OutputDebugString(L"Recieved connection\n");
 }
 
@@ -97,22 +99,22 @@ void Game::serverRequestHandler(DataReader^ reader, Sockets::StreamSocket^ socke
 	create_task(reader->LoadAsync(sizeof(UINT32))).then([this, reader, socket](unsigned int size)
 		{
 			if (size < sizeof(UINT32)) {
-				OutputDebugString(L"Socket was closed before reading was complete");
+				OutputDebugString(L"Socket was closed before reading was complete\n");
 				cancel_current_task();
 			}
 			unsigned int stringLength = reader->ReadUInt32();
 			return create_task(reader->LoadAsync(stringLength)).then([this, reader, stringLength](unsigned int actualStringLength)
 				{
 					if (actualStringLength != stringLength) {
-						OutputDebugString(L"Socket was closed before reading was complete");
+						OutputDebugString(L"Socket was closed before reading was complete\n");
 						cancel_current_task();
 					}
 					auto myJson = ref new JsonObject();
 					auto jsonString = reader->ReadString(actualStringLength);
-					myJson->Parse(jsonString);
+					myJson->TryParse(jsonString, &myJson);
 					auto requestType = myJson->GetNamedString("requestType");
 					if (requestType == "GameInvite") {
-						OutputDebugString(L"Fuck yeah");
+						OutputDebugString(L"Fuck yeah\n");
 					}
 				});
 		});
