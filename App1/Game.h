@@ -47,6 +47,8 @@ namespace App1 {
 		JsonObject^ requestHandler(JsonObject^ jsonRequest);
 		void responseHandler(JsonObject^ jsonResponse);
 	private:
+		DataWriter^ mWriter;
+		DataReader^ mReader;
 		gameStatus mGameStatus = gameStatus::Idle;
 		gameSide mGameSide;
 		GameFindPage^ mGameFindPage;

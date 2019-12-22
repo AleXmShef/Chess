@@ -53,6 +53,8 @@ void Game::sendInvitation(String^ serverHost) {
 		try {
 			previousTask.get();
 			mSocket = socket;
+			mReader = ref new DataReader(mSocket->InputStream);
+			mWriter = ref new DataWriter(mSocket->OutputStream);
 			auto requestJson = ref new JsonObject();
 			requestJson->Insert("requestType", JsonValue::CreateStringValue("GameInvite"));
 			sendJson(requestJson, mSocket);
@@ -86,10 +88,12 @@ void Game::startServer() {
 
 void Game::serverOnConnectHandler(Sockets::StreamSocketListener^ socket, Sockets::StreamSocketListenerConnectionReceivedEventArgs^ args) {
 	mSocket = args->Socket;
+	mReader = ref new DataReader(mSocket->InputStream);
+	mWriter = ref new DataWriter(mSocket->OutputStream);
 	recieveJson(mSocket).then([this](JsonObject^ requestJson)
 		{
 			requestHandler(requestJson);
-			//serverRequestHandler();
+			serverRequestHandler();
 		});
 	OutputDebugString(L"Recieved connection\n");
 }
@@ -188,11 +192,10 @@ gameStatus Game::getGameStatus() {
 
 
 void Game::sendJson(JsonObject^ jsonParam, Sockets::StreamSocket^ socket) {
-	auto writer = ref new DataWriter(socket->OutputStream);
 	auto jsonString = jsonParam->Stringify();
-	writer->WriteUInt32(writer->MeasureString(jsonString));
-	writer->WriteString(jsonString);
-	create_task(writer->StoreAsync()).then([this, socket](task<unsigned int> writeTask)
+	mWriter->WriteUInt32(mWriter->MeasureString(jsonString));
+	mWriter->WriteString(jsonString);
+	create_task(mWriter->StoreAsync()).then([this, socket](task<unsigned int> writeTask)
 		{
 			try {
 				writeTask.get();
@@ -206,27 +209,26 @@ void Game::sendJson(JsonObject^ jsonParam, Sockets::StreamSocket^ socket) {
 }
 
 task<JsonObject^> Game::recieveJson(Sockets::StreamSocket^ socket) {
-	auto reader = ref new DataReader(socket->InputStream);
-	return create_task(reader->LoadAsync(sizeof(UINT32))).then([this, reader, socket](unsigned int size)
+	return create_task(mReader->LoadAsync(sizeof(UINT32))).then([this](unsigned int size)
 		{
 			if (size < sizeof(UINT32)) {
 				OutputDebugString(L"Socket was closed before reading was complete\n");
 				cancel_current_task();
 			}
-			unsigned int stringLength = reader->ReadUInt32();
-			return create_task(reader->LoadAsync(stringLength)).then([this, reader, socket, stringLength](unsigned int actualStringLength)
+			unsigned int stringLength = mReader->ReadUInt32();
+			return create_task(mReader->LoadAsync(stringLength)).then([this, stringLength](unsigned int actualStringLength)
 				{
 					if (actualStringLength != stringLength) {
 						OutputDebugString(L"Socket was closed before reading was complete\n");
 						cancel_current_task();
 					}
 					//auto myJson = ref new JsonObject();
-					auto jsonString = reader->ReadString(actualStringLength);
+					auto jsonString = mReader->ReadString(actualStringLength);
 					auto mJson = ref new JsonObject();
 					mJson->TryParse(jsonString, &mJson);
 					auto str = mJson->Stringify();
 					return mJson;
-				}).then([this, socket](JsonObject^ mJson)
+				}).then([this](JsonObject^ mJson)
 					{
 						try {
 							//previousTask.get();
@@ -234,11 +236,11 @@ task<JsonObject^> Game::recieveJson(Sockets::StreamSocket^ socket) {
 						}
 						catch (Exception ^ e) {
 							OutputDebugString(L"Unknown error\n");
-							delete socket;
+							delete mSocket;
 						}
 						catch (task_canceled&) {
 							OutputDebugString(L"Unknown error\n");
-							delete socket;
+							delete mSocket;
 						}
 					});
 		});
