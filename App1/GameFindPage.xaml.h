@@ -18,7 +18,8 @@ namespace App1
 	{
 	public:
 		GameFindPage();
-		void showInvitationDialog(bool* res);
+	internal:
+		task<bool> showInvitationDialog();
 	private:
 		Game^ _mGame;
 		void buttonPressed(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
