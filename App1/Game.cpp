@@ -110,31 +110,10 @@ JsonObject^ Game::requestHandler(JsonObject^ jsonRequest) {
 	auto requestType = jsonRequest->GetNamedString("requestType");
 	if (requestType == "GameInvite") {
 		if (mGameFindPage) {
-			auto result = new bool();
-			create_task(mGameFindPage->Dispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([this, result]()
+			mGameFindPage->Dispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([this]()
 				{
-					this->mGameFindPage->showInvitationDialog(result);
-				}))).then([this, result]()
-					{
-						if (result) {
-							//confirm invitation
-							mGameStatus = gameStatus::InviteAccepted;
-							auto responseJson = ref new JsonObject();
-							responseJson->Insert("responseType", JsonValue::CreateStringValue("GameInviteAccept"));
-							sendJson(responseJson, mSocket);
-							mGameFindPage->Dispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([this, result]() {
-								auto rootFrame = dynamic_cast<Windows::UI::Xaml::Controls::Frame^>(Window::Current->Content);
-								if (!rootFrame->Navigate(TypeName(GamePage::typeid))) {
-									OutputDebugString(L"Failed to navigate to findGame screen\n");
-								}
-							}));
-						}
-						else {
-							auto responseJson = ref new JsonObject();
-							responseJson->Insert("responseType", JsonValue::CreateStringValue("GameInviteDecline"));
-							sendJson(responseJson, mSocket);
-						}
-					});
+					this->mGameFindPage->showInvitationDialog();
+				}));
 		}
 	}
 	else if (requestType == "WhichSide") {
@@ -162,7 +141,7 @@ void Game::responseHandler(JsonObject^ jsonResponse) {
 	if (responseType == "GameInviteAccept") {
 		mGameStatus = gameStatus::InviteAccepted;
 
-		mGameFindPage->Dispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([this, result]() {
+		mGameFindPage->Dispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([this]() {
 			auto rootFrame = dynamic_cast<Windows::UI::Xaml::Controls::Frame^>(Window::Current->Content);
 			if (!rootFrame->Navigate(TypeName(GamePage::typeid))) {
 				OutputDebugString(L"Failed to navigate to findGame screen\n");
@@ -243,4 +222,18 @@ task<JsonObject^> Game::recieveJson(Sockets::StreamSocket^ socket) {
 						}
 					});
 		});
+}
+
+void Game::acceptInvitation() {
+	//confirm invitation
+	mGameStatus = gameStatus::InviteAccepted;
+	auto responseJson = ref new JsonObject();
+	responseJson->Insert("responseType", JsonValue::CreateStringValue("GameInviteAccept"));
+	sendJson(responseJson, mSocket);
+	mGameFindPage->Dispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([this]() {
+		auto rootFrame = dynamic_cast<Windows::UI::Xaml::Controls::Frame^>(Window::Current->Content);
+		if (!rootFrame->Navigate(TypeName(GamePage::typeid))) {
+			OutputDebugString(L"Failed to navigate to findGame screen\n");
+		}
+	}));
 }

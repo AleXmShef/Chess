@@ -29,6 +29,8 @@ namespace App1 {
 		static Game^ getInstance();
 		String^ getStringIP();
 		void sendInvitation(String^ serverHost);
+		void acceptInvitation();
+		void declineInvitation();
 		void registerFindPage(GameFindPage^ page);
 		void registerGamePage(GamePage^ page);
 		gameStatus getGameStatus();

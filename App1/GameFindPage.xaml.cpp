@@ -60,14 +60,14 @@ void App1::GameFindPage::FindMenuButtonOffFocus(Platform::Object^ sender, Window
 	((TextBlock^)sender)->Foreground = brush;
 }
 
-void App1::GameFindPage::showInvitationDialog(bool* res) {
-	create_task(this->InvitationDialog->ShowAsync()).then([this, res](ContentDialogResult result)
+void App1::GameFindPage::showInvitationDialog() {
+	create_task(this->InvitationDialog->ShowAsync()).then([this](ContentDialogResult result)
 		{
 			if (result == ContentDialogResult::Primary) {
-				*res = true;
+				_mGame->acceptInvitation();
 			}
 			else
-				*res = false;
+				_mGame->declineInvitation();
 		});
 }
 
