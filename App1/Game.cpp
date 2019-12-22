@@ -119,5 +119,5 @@ void Game::serverRequestHandler(DataReader^ reader, Sockets::StreamSocket^ socke
 }
 
 void Game::registerFindPage(GameFindPage^ page) {
-	mGameFindPage = page;
+	//mGameFindPage = page;
 }

@@ -30,7 +30,6 @@
                 <TextBlock x:Name="back" HorizontalAlignment="Center" Text="Back" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="90" FocusVisualPrimaryBrush="#FFD4D4D4" Foreground="#FFD4D4D4" FontWeight="Bold" FontStyle="Normal" PointerEntered="FindMenuButtonOnFocus" FocusVisualSecondaryBrush="#99000000" PointerExited="FindMenuButtonOffFocus" PointerPressed="FindMenuButtonOnClick" Grid.Row="2" Grid.Column="1"/>
 
             </Grid>
-            <Button x:Name="testbutton" Content="Button" Margin="1585,354,0,0" VerticalAlignment="Top" Height="109" Width="334" FontSize="70" Click="buttonPressed"/>
-            </Grid>
+        </Grid>
     </Viewbox>
 </Page>

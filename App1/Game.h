@@ -25,7 +25,7 @@ namespace App1 {
 		void sendInvitation(String^ serverHost);
 		void registerFindPage(GameFindPage^ page);
 	public:
-		gameStatus mGameStatus = Idle;
+		//property gameStatus mGameStatus;
 	private:
 		Game();
 		void Init();
