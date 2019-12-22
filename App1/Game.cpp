@@ -56,19 +56,23 @@ void Game::sendInvitation(String^ serverHost) {
 			auto jsonString = helloJson->Stringify();
 			writer->WriteUInt32(writer->MeasureString(jsonString));
 			writer->WriteString(jsonString);
-			create_task(writer->StoreAsync()).then([this, socket, jsonString](task<unsigned int> writeTask)
+			create_task(writer->StoreAsync()).then([this, socket, jsonString, writer](task<unsigned int> writeTask)
 				{
 					try {
 						writeTask.get();
 						OutputDebugString(L"Invite sent successfully");
+						auto reader = ref new DataReader(socket->InputStream);
+						clientResponseHandler(reader, writer, socket);
 					}
 					catch (Exception ^ e) {
 						OutputDebugString(L"Failed to send invitation");
+						delete socket;
 					}
 				});
 		}
 		catch (Exception^ e) {
 			OutputDebugString(L"Failed to connect\n");
+			delete socket;
 		}
 		}
 	);
@@ -113,11 +117,85 @@ void Game::serverRequestHandler(DataReader^ reader, Sockets::StreamSocket^ socke
 					auto jsonString = reader->ReadString(actualStringLength);
 					myJson->TryParse(jsonString, &myJson);
 					auto requestType = myJson->GetNamedString("requestType");
-					if (requestType == "GameInvite") {
-						OutputDebugString(L"Fuck yeah\n");
-					}
+					auto responseJson = requestHandler(myJson);
 				});
-		});
+		}).then([this, reader, socket](task<void> previousTask) 
+			{
+				try {
+					previousTask.get();
+					serverRequestHandler(reader, socket);
+				}
+				catch (Exception^ e) {
+					OutputDebugString(L"Unknown error\n");
+					delete socket;
+				}
+				catch (task_canceled&) {
+					OutputDebugString(L"Unknown error\n");
+					delete socket;
+				}
+			});
+}
+
+void Game::clientResponseHandler(DataReader^ reader, DataWriter^ writer, Sockets::StreamSocket^ socket) {
+	create_task(reader->LoadAsync(sizeof(UINT32))).then([this, reader, writer, socket](unsigned int size)
+		{
+			if (size < sizeof(UINT32)) {
+				OutputDebugString(L"Socket was closed before reading was complete\n");
+				cancel_current_task();
+			}
+			unsigned int stringLength = reader->ReadUInt32();
+			return create_task(reader->LoadAsync(stringLength)).then([this, reader, stringLength](unsigned int actualStringLength)
+				{
+					if (actualStringLength != stringLength) {
+						OutputDebugString(L"Socket was closed before reading was complete\n");
+						cancel_current_task();
+					}
+					auto myJson = ref new JsonObject();
+					auto jsonString = reader->ReadString(actualStringLength);
+					myJson->TryParse(jsonString, &myJson);
+					
+				});
+		}).then([this, reader, socket](task<void> previousTask)
+			{
+				try {
+					previousTask.get();
+				}
+				catch (Exception^ e) {
+					OutputDebugString(L"Unknown error\n");
+					delete socket;
+				}
+				catch (task_canceled&) {
+					OutputDebugString(L"Unknown error\n");
+					delete socket;
+				}
+			});;
+}
+
+JsonObject^ Game::requestHandler(JsonObject^ jsonRequest) {
+	auto requestType = jsonRequest->GetNamedString("requestType");
+	if (requestType == "GameInvite") {
+		if (mGameFindPage) {
+			bool result = mGameFindPage->showInvitationDialog();
+			if (result) {
+				OutputDebugString(L"FuckYeah");
+			}
+		}
+	}
+	else if (requestType == "WhichSide") {
+
+	}
+	else if (requestType == "MyMove") {
+
+	}
+	else if (requestType == "YourMove") {
+
+	}
+	else if (requestType == "Consiede") {
+
+	}
+	else {
+
+	}
 }
 
 void Game::registerFindPage(GameFindPage^ page) {

@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
-#include "GameFindPage.g.h"
+#include "GameFindPage.xaml.h"
 #include "Board.h"
 
 using namespace Platform;
@@ -33,6 +33,8 @@ namespace App1 {
 		void startServer();
 		void serverOnConnectHandler(Sockets::StreamSocketListener^ socket, Sockets::StreamSocketListenerConnectionReceivedEventArgs^ args);
 		void serverRequestHandler(DataReader^ reader, Sockets::StreamSocket^ socket);
+		void clientResponseHandler(DataReader^ reader, DataWriter^ writer, Sockets::StreamSocket^ socket);
+		JsonObject^ requestHandler(JsonObject^ jsonReauest);
 	private:
 		GameFindPage^ mGameFindPage;
 		HostName^ mLocalhost;

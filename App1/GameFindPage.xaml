@@ -30,6 +30,11 @@
                 <TextBlock x:Name="back" HorizontalAlignment="Center" Text="Back" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="90" FocusVisualPrimaryBrush="#FFD4D4D4" Foreground="#FFD4D4D4" FontWeight="Bold" FontStyle="Normal" PointerEntered="FindMenuButtonOnFocus" FocusVisualSecondaryBrush="#99000000" PointerExited="FindMenuButtonOffFocus" PointerPressed="FindMenuButtonOnClick" Grid.Row="2" Grid.Column="1"/>
 
             </Grid>
+            <ContentDialog x:Name="InvitationDialog" PrimaryButtonText="Accept" CloseButtonText="Decline" Background="#FFA0A0A0">
+                <TextBlock FontWeight="Bold" FontStyle="Normal" HorizontalAlignment="Center" FocusVisualPrimaryBrush="Black" Foreground="White" FontSize="24">
+                    You recieved an invitation
+                </TextBlock>   
+            </ContentDialog>
         </Grid>
     </Viewbox>
 </Page>
