@@ -94,6 +94,69 @@ void Board::moveAvailibilityPass() {
 							moveVec->push_back(tmove);
 						}
 					}
+					case ChipType::Queen:
+					{
+						if ((k + 1) < 8 && (l + 1) < 8 && ((*(*mCellBoard)[k + 1])[l + 1]->chip == nullptr)) {
+							auto tmove = ref new Move();
+							tmove->fromXY.first = l;
+							tmove->fromXY.second = k;
+							tmove->toXY.first = l + 1;
+							tmove->toXY.second = k + 1;
+							moveVec->push_back(tmove);
+						}
+						if ((k + 1) < 8 && (l - 1) >= 0 && ((*(*mCellBoard)[k + 1])[l - 1]->chip == nullptr)) {
+							auto tmove = ref new Move();
+							tmove->fromXY.first = l;
+							tmove->fromXY.second = k;
+							tmove->toXY.first = l - 1;
+							tmove->toXY.second = k + 1;
+							moveVec->push_back(tmove);
+						}
+						if ((k + 2) < 8 && (l + 2) < 8 && ((*(*mCellBoard)[k + 1])[l + 1]->chip != nullptr) && (*(*mCellBoard)[k + 1])[l + 1]->chip->colour != mGameSide) {
+							auto tmove = ref new Move();
+							tmove->fromXY.first = l;
+							tmove->fromXY.second = k;
+							tmove->toXY.first = l + 2;
+							tmove->toXY.second = k + 2;
+							tmove->isCutting = true;
+							areCutting = true;
+							tmove->cuttedChip = (*(*mCellBoard)[k + 1])[l + 1]->chip;
+							moveVec->push_back(tmove);
+						}
+						if ((k + 2) < 8 && (l - 2) >= 0 && (*(*mCellBoard)[k + 1])[l - 1]->chip != nullptr && (*(*mCellBoard)[k + 1])[l - 1]->chip->colour != mGameSide) {
+							auto tmove = ref new Move();
+							tmove->fromXY.first = l;
+							tmove->fromXY.second = k;
+							tmove->toXY.first = l - 2;
+							tmove->toXY.second = k + 2;
+							tmove->isCutting = true;
+							areCutting = true;
+							tmove->cuttedChip = (*(*mCellBoard)[k + 1])[l - 1]->chip;
+							moveVec->push_back(tmove);
+						}
+						if (k - 2 >= 0 && l + 2 < 8 && (*(*mCellBoard)[k - 1])[l + 1]->chip != nullptr && (*(*mCellBoard)[k - 1])[l + 1]->chip->colour != mGameSide) {
+							auto tmove = ref new Move();
+							tmove->fromXY.first = l;
+							tmove->fromXY.second = k;
+							tmove->toXY.first = l + 2;
+							tmove->toXY.second = k - 2;
+							tmove->isCutting = true;
+							areCutting = true;
+							tmove->cuttedChip = (*(*mCellBoard)[k - 1])[l + 1]->chip;
+							moveVec->push_back(tmove);
+						}
+						if ((k - 2) >= 0 && (l - 2) >= 0 && (*(*mCellBoard)[k - 1])[l - 1]->chip != nullptr && (*(*mCellBoard)[k - 1])[l - 1]->chip->colour != mGameSide) {
+							auto tmove = ref new Move();
+							tmove->fromXY.first = l;
+							tmove->fromXY.second = k;
+							tmove->toXY.first = l - 2;
+							tmove->toXY.second = k - 2;
+							tmove->isCutting = true;
+							areCutting = true;
+							tmove->cuttedChip = (*(*mCellBoard)[k - 1])[l - 1]->chip;
+							moveVec->push_back(tmove);
+						}
+					}
 					}
 				}
 				if (!moveVec->empty()) {
@@ -305,7 +368,26 @@ void Board::move(Move^ move) {
 	if (move->isCutting) {
 		(*(*mCellBoard)[y])[x]->chip = nullptr;
 	}
+	if (move->toXY.second == 7)
+		(*(*mCellBoard)[move->toXY.second])[move->toXY.first]->chip->type = ChipType::Queen;
 	Game::getInstance()->sendMove(jsonMove);
+
+	//is game ended pass
+	int me = 0;
+	int opponent = 0;
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 0; j++) {
+			if ((*(*mCellBoard)[i])[j]->chip != nullptr) {
+				if ((*(*mCellBoard)[i])[j]->chip->colour == mGameSide)
+					me++;
+				else if ((*(*mCellBoard)[i])[j]->chip->colour != mGameSide)
+					opponent++;
+			}
+		}
+	}
+	if (opponent == 0) {
+		//game ended
+	}
 }
 
 void Board::moveFromJson(JsonObject^ jsonMove) {
@@ -324,5 +406,24 @@ void Board::moveFromJson(JsonObject^ jsonMove) {
 	(*(*mCellBoard)[fromY])[fromX]->chip = nullptr;
 	if (isCutting) {
 		(*(*mCellBoard)[cY])[cX]->chip = nullptr;
+	}
+	if (toY == 0)
+		(*(*mCellBoard)[toY])[toX]->chip->type = ChipType::Queen;
+
+	//is game ended pass
+	int me = 0;
+	int opponent = 0;
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 0; j++) {
+			if ((*(*mCellBoard)[i])[j]->chip != nullptr) {
+				if ((*(*mCellBoard)[i])[j]->chip->colour == mGameSide)
+					me++;
+				else if ((*(*mCellBoard)[i])[j]->chip->colour != mGameSide)
+					opponent++;
+			}
+		}
+	}
+	if (me == 0) {
+		//game ended
 	}
 }

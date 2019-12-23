@@ -347,3 +347,11 @@ void Game::sendMove(JsonObject^ jsonMove) {
 	mGameStatus = gameStatus::NotMyMove;
 
 };
+
+void Game::winMessage() {
+
+}
+
+void Game::loseMessage() {
+
+}

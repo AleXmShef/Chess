@@ -67,6 +67,18 @@
     <Image Include="Assets\Checkerboard.jpg">
       <Filter>Assets</Filter>
     </Image>
+    <Image Include="Assets\Brown-crown.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Brown-crown-selected.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\White-crown.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\White-crown-selected.png">
+      <Filter>Assets</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Page Include="GameFindPage.xaml">

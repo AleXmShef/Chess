@@ -5,6 +5,7 @@
 
 #include "pch.h"
 #include "GamePage.xaml.h"
+#include "MainPage.xaml.h"
 
 using namespace App1;
 
@@ -61,10 +62,18 @@ void GamePage::ChipOnFocus(Platform::Object^ sender, Windows::UI::Xaml::Input::P
 		int y = 7 - BoardGrid->GetRow((Image^)sender);
 		if (!isAnyChipSelected) {
 			if ((*(*mCellBoard)[y])[x]->chip != nullptr && mMoveMap->count(std::pair<int, int>(x, y)) > 0) {
-				if ((*(*mCellBoard)[y])[x]->chip->colour == GameSide::Brown)
-					((Image^)sender)->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/Brown-selected.png"));
-				else
-					((Image^)sender)->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/White-selected.png"));
+				if ((*(*mCellBoard)[y])[x]->chip->type == ChipType::Regular) {
+					if ((*(*mCellBoard)[y])[x]->chip->colour == GameSide::Brown)
+						((Image^)sender)->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/Brown-selected.png"));
+					else
+						((Image^)sender)->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/White-selected.png"));
+				}
+				else {
+					if ((*(*mCellBoard)[y])[x]->chip->colour == GameSide::Brown)
+						((Image^)sender)->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/Brown-crown-selected.png"));
+					else
+						((Image^)sender)->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/White-crown-selected.png"));
+				}
 			}
 		}
 		else {
@@ -87,10 +96,18 @@ void GamePage::ChipOffFocus(Platform::Object^ sender, Windows::UI::Xaml::Input::
 		if ((isAnyChipSelected == true && x != selectedChip.first && y != selectedChip.second) || isAnyChipSelected == false) {
 			if ((*(*mCellBoard)[y])[x]->chip == nullptr)
 				((Image^)sender)->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/Blank.png"));
-			else if ((*(*mCellBoard)[y])[x]->chip->colour == GameSide::Brown)
-				((Image^)sender)->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/Brown.png"));
-			else if ((*(*mCellBoard)[y])[x]->chip->colour == GameSide::White)
-				((Image^)sender)->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/White.png"));
+			else if ((*(*mCellBoard)[y])[x]->chip->type == ChipType::Regular) {
+				if ((*(*mCellBoard)[y])[x]->chip->colour == GameSide::Brown)
+					((Image^)sender)->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/Brown.png"));
+				else 
+					((Image^)sender)->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/White.png"));
+			}
+			else {
+				if ((*(*mCellBoard)[y])[x]->chip->colour == GameSide::Brown)
+					((Image^)sender)->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/Brown-crown.png"));
+				else
+					((Image^)sender)->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/White-crown.png"));
+			}
 		}
 	}
 }
@@ -133,12 +150,43 @@ void GamePage::updateBoard() {
 		int x = BoardGrid->GetColumn(timg);
 		int y = 7 -  BoardGrid->GetRow(timg);
 		if ((*(*mCellBoard)[y])[x]->chip != nullptr) {
-			if((*(*mCellBoard)[y])[x]->chip->colour == GameSide::Brown)
-				timg->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/Brown.png"));
-			else
-				timg->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/White.png"));
+			if ((*(*mCellBoard)[y])[x]->chip->type == ChipType::Regular) {
+				if ((*(*mCellBoard)[y])[x]->chip->colour == GameSide::Brown)
+					timg->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/Brown.png"));
+				else
+					timg->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/White.png"));
+			}
+			else {
+				if ((*(*mCellBoard)[y])[x]->chip->colour == GameSide::Brown)
+					timg->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/Brown-crown.png"));
+				else
+					timg->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/White-crown.png"));
+			}
 		}
 		else
 			timg->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/Blank.png"));
 	}
+}
+
+void GamePage::showLoseDialog() {
+	create_task(LoseDialog->ShowAsync()).then([this]()
+		{
+			delete mGame;
+			delete mBoard;
+			auto rootFrame = dynamic_cast<Windows::UI::Xaml::Controls::Frame^>(Window::Current->Content);
+			if (!rootFrame->Navigate(TypeName(MainPage::typeid))) {
+				OutputDebugString(L"Failed to navigate to settings screen\n");
+			}
+		});
+}
+void GamePage::showWinDialog() {
+	create_task(WinDialog->ShowAsync()).then([this]()
+		{
+			delete mGame;
+			delete mBoard;
+			auto rootFrame = dynamic_cast<Windows::UI::Xaml::Controls::Frame^>(Window::Current->Content);
+			if (!rootFrame->Navigate(TypeName(MainPage::typeid))) {
+				OutputDebugString(L"Failed to navigate to settings screen\n");
+			}
+		});
 }
