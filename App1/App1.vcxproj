@@ -221,7 +221,9 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Assets\Brown selected.png" />
+    <Image Include="Assets\Blank-selected.png" />
+    <Image Include="Assets\Blank.png" />
+    <Image Include="Assets\Brown-selected.png" />
     <Image Include="Assets\Brown.png" />
     <Image Include="Assets\cross-out-clipart-5.png" />
     <Image Include="Assets\LockScreenLogo.scale-200.png" />
@@ -232,7 +234,7 @@
     <Image Include="Assets\StoreLogo.png" />
     <Image Include="Assets\WelcomeBackground.jpeg" />
     <Image Include="Assets\WelcomeBackground.png" />
-    <Image Include="Assets\White selected.png" />
+    <Image Include="Assets\White-selected.png" />
     <Image Include="Assets\White.png" />
     <Image Include="Assets\Wide310x150Logo.scale-200.png" />
   </ItemGroup>

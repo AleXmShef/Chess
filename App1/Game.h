@@ -1,10 +1,10 @@
 #pragma once
 #include "pch.h"
+#include "Board.h"
 #include "GameFindPage.g.h"
 #include "GamePage.g.h"
 #include <string>
 #include <vector>
-#include "Board.h"
 
 using namespace Platform;
 using namespace Platform::Collections;
@@ -22,10 +22,10 @@ using namespace concurrency;
 
 namespace App1 {
 	public enum class gameStatus { Idle, InviteAccepted, PopulatingBoard, DecidingSide, GameStart, MyMove, NotMyMove };
-	public enum class gameSide {White, Brown};
 	ref class Game sealed
 	{
-	public:
+	internal:
+		App1::GameSide getGameSide();
 		static Game^ getInstance();
 		String^ getStringIP();
 		void sendInvitation(String^ serverHost);
@@ -50,7 +50,7 @@ namespace App1 {
 		DataWriter^ mWriter;
 		DataReader^ mReader;
 		gameStatus mGameStatus = gameStatus::Idle;
-		gameSide mGameSide;
+		GameSide mGameSide;
 		GameFindPage^ mGameFindPage;
 		GamePage^ mGamePage;
 		HostName^ mLocalhost;

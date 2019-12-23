@@ -46,16 +46,22 @@
     <Image Include="Assets\cross-out-clipart-5.png">
       <Filter>Assets</Filter>
     </Image>
-    <Image Include="Assets\Brown selected.png">
-      <Filter>Assets</Filter>
-    </Image>
     <Image Include="Assets\Brown.png">
       <Filter>Assets</Filter>
     </Image>
-    <Image Include="Assets\White selected.png">
+    <Image Include="Assets\White.png">
       <Filter>Assets</Filter>
     </Image>
-    <Image Include="Assets\White.png">
+    <Image Include="Assets\Brown-selected.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\White-selected.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Blank.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Blank-selected.png">
       <Filter>Assets</Filter>
     </Image>
   </ItemGroup>

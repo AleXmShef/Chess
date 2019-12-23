@@ -141,6 +141,15 @@ JsonObject^ Game::requestHandler(JsonObject^ jsonRequest) {
 		}
 	}
 	else if (requestType == "WhichSide") {
+		mGameSide = GameSide::White;
+		mBoard = Board::getInstance();
+		mBoard->populateBoard(mGameSide);
+		while (mGamePage = nullptr) {
+
+		};
+		mGameFindPage->Dispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([this]() {
+			mGamePage->populateBoard();
+		}));
 		auto responseJson = ref new JsonObject();
 		responseJson->Insert("responseType", JsonValue::CreateStringValue("WhichSide"));
 		responseJson->Insert("responseContent", JsonValue::CreateStringValue("Brown"));
@@ -164,6 +173,13 @@ void Game::responseHandler(JsonObject^ jsonResponse) {
 	auto responseType = jsonResponse->GetNamedString("responseType");
 	if (responseType == "GameInviteAccept") {
 		mGameStatus = gameStatus::InviteAccepted;
+		auto requestJson = ref new JsonObject();
+		requestJson->Insert("requestType", JsonValue::CreateStringValue("WhichSide"));
+		sendJson(requestJson, mSocket);
+		recieveJson(mSocket).then([this](JsonObject^ responseJson)
+			{
+				responseHandler(responseJson);
+			});
 
 		mGameFindPage->Dispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([this]() {
 			auto rootFrame = dynamic_cast<Windows::UI::Xaml::Controls::Frame^>(Window::Current->Content);
@@ -174,6 +190,19 @@ void Game::responseHandler(JsonObject^ jsonResponse) {
 	}
 	if (responseType == "GameInviteDecline") {
 
+	}
+	if (responseType == "WhichSide") {
+		auto side = jsonResponse->GetNamedString("responseContent");
+		if (side == "White")
+			mGameSide = GameSide::White;
+		else
+			mGameSide = GameSide::Brown;
+		while (mGamePage == nullptr) {
+
+		};
+		mGamePage->Dispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([this]() {
+			this->mGamePage->populateBoard();
+		}));
 	}
 }
 
@@ -244,4 +273,8 @@ task<JsonObject^> Game::recieveJson(Sockets::StreamSocket^ socket) {
 						}
 					});
 		});
+}
+
+GameSide Game::getGameSide() {
+	return mGameSide;
 }

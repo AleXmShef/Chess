@@ -9,6 +9,8 @@
 #include "Game.h"
 #include "Board.h"
 #include <vector>
+#include <map>
+#include <utility>
 
 using namespace Platform::Collections;
 using namespace Windows::UI::Xaml::Controls;
@@ -22,9 +24,18 @@ namespace App1
 	{
 	public:
 		GamePage();
-	private:
-		Game^ mGame;
 		void populateBoard();
+		void updateBoard();
+	private:
+		bool isAnyChipSelected = false;
+		std::pair<int, int> selectedChip;
+		Game^ mGame;
+		Board^ mBoard;
 		std::vector<std::vector<Image^>*>* mBoardVector;
+		std::map<std::pair<int,int>*, std::vector<Move^>*>* mMoveMap;
+		std::vector<std::vector<Cell^>*>* mCellBoard;
+		void ChipOnFocus(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ e);
+		void ChipOffFocus(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ e);
+		void ChipButtonClick(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ e);
 	};
 }
