@@ -144,10 +144,10 @@ JsonObject^ Game::requestHandler(JsonObject^ jsonRequest) {
 		mGameSide = GameSide::White;
 		mBoard = Board::getInstance();
 		mBoard->populateBoard(mGameSide);
-		while (mGamePage = nullptr) {
+		while (mGamePage == nullptr) {
 
 		};
-		mGameFindPage->Dispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([this]() {
+		mGamePage->Dispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([this]() {
 			mGamePage->populateBoard();
 		}));
 		auto responseJson = ref new JsonObject();

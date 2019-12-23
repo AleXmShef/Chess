@@ -32,7 +32,7 @@ namespace App1
 		Game^ mGame;
 		Board^ mBoard;
 		std::vector<std::vector<Image^>*>* mBoardVector;
-		std::map<std::pair<int,int>*, std::vector<Move^>*>* mMoveMap;
+		std::map<std::pair<int,int>, std::vector<Move^>*>* mMoveMap;
 		std::vector<std::vector<Cell^>*>* mCellBoard;
 		void ChipOnFocus(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ e);
 		void ChipOffFocus(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ e);

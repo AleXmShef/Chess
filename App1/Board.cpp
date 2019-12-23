@@ -17,8 +17,7 @@ Board::Board() {
 };
 
 void Board::moveAvailibilityPass() {
-	delete mMoveAvailibilityPassMap;
-	mMoveAvailibilityPassMap->clear();
+	mMoveAvailibilityPassMap = new std::map<std::pair<int, int>, std::vector<Move^>*>;
 	bool areCutting = false;
 	//first pass to set areCutting flag
 	for (int k = 0; k < 8; k++) {
@@ -26,8 +25,8 @@ void Board::moveAvailibilityPass() {
 			if ((*(*mCellBoard)[k])[l]->chip != nullptr) {
 				auto moveVec = new std::vector<Move^>;
 				auto tchip = (*(*mCellBoard)[k])[l]->chip;
-				if ((*(*mCellBoard)[k])[l]->chip->colour == mGameSide) {
-					switch ((*(*mCellBoard)[k])[l]->chip->type) {
+				if (tchip->colour == mGameSide) {
+					switch (tchip->type) {
 					case ChipType::Regular:
 					{
 						if ((k + 1) < 8 && (l + 1) < 8 && ((*(*mCellBoard)[k + 1])[l + 1]->chip == nullptr)) {
@@ -38,7 +37,7 @@ void Board::moveAvailibilityPass() {
 							tmove->toXY.second = k + 1;
 							moveVec->push_back(tmove);
 						}
-						if ((k + 1) < 8 && (l - 1) < 8 && ((*(*mCellBoard)[k + 1])[l - 1]->chip == nullptr)) {
+						if ((k + 1) < 8 && (l - 1) >= 0 && ((*(*mCellBoard)[k + 1])[l - 1]->chip == nullptr)) {
 							auto tmove = ref new Move();
 							tmove->fromXY.first = l;
 							tmove->fromXY.second = k;
@@ -57,7 +56,7 @@ void Board::moveAvailibilityPass() {
 							tmove->cuttedChip = (*(*mCellBoard)[k + 1])[l + 1]->chip;
 							moveVec->push_back(tmove);
 						}
-						if ((k + 2) < 8 && (l - 2) < 8 && (*(*mCellBoard)[k + 1])[l - 1]->chip != nullptr && (*(*mCellBoard)[k + 1])[l - 1]->chip->colour != mGameSide) {
+						if ((k + 2) < 8 && (l - 2) >= 0 && (*(*mCellBoard)[k + 1])[l - 1]->chip != nullptr && (*(*mCellBoard)[k + 1])[l - 1]->chip->colour != mGameSide) {
 							auto tmove = ref new Move();
 							tmove->fromXY.first = l;
 							tmove->fromXY.second = k;
@@ -68,7 +67,7 @@ void Board::moveAvailibilityPass() {
 							tmove->cuttedChip = (*(*mCellBoard)[k + 1])[l - 1]->chip;
 							moveVec->push_back(tmove);
 						}
-						if (k - 2 < 8 && l + 2 < 8 && (*(*mCellBoard)[k - 1])[l + 1]->chip != nullptr && (*(*mCellBoard)[k - 1])[l + 1]->chip->colour != mGameSide) {
+						if (k - 2 >= 0 && l + 2 < 8 && (*(*mCellBoard)[k - 1])[l + 1]->chip != nullptr && (*(*mCellBoard)[k - 1])[l + 1]->chip->colour != mGameSide) {
 							auto tmove = ref new Move();
 							tmove->fromXY.first = l;
 							tmove->fromXY.second = k;
@@ -79,7 +78,7 @@ void Board::moveAvailibilityPass() {
 							tmove->cuttedChip = (*(*mCellBoard)[k - 1])[l + 1]->chip;
 							moveVec->push_back(tmove);
 						}
-						if ((k - 2) < 8 && (l - 2) < 8 && (*(*mCellBoard)[k - 1])[l - 1]->chip != nullptr && (*(*mCellBoard)[k - 1])[l - 1]->chip->colour != mGameSide) {
+						if ((k - 2) >= 0 && (l - 2) >= 0 && (*(*mCellBoard)[k - 1])[l - 1]->chip != nullptr && (*(*mCellBoard)[k - 1])[l - 1]->chip->colour != mGameSide) {
 							auto tmove = ref new Move();
 							tmove->fromXY.first = l;
 							tmove->fromXY.second = k;
@@ -93,10 +92,12 @@ void Board::moveAvailibilityPass() {
 					}
 					}
 				}
-				auto pair = new std::pair<int, int>;
-				pair->first = l;
-				pair->second = k;
-				mMoveAvailibilityPassMap->insert({pair, moveVec});
+				if (!moveVec->empty()) {
+					std::pair<int,int> pair;
+					pair.first = l;
+					pair.second = k;
+					mMoveAvailibilityPassMap->insert({ pair, moveVec });
+				}
 			}
 		}
 	}
@@ -167,30 +168,30 @@ void Board::populateBoard(GameSide side) {
 		(*(*mCellBoard)[5])[7]->chip = ref new Chip();
 		(*(*mCellBoard)[5])[7]->chip->type = ChipType::Regular;
 		(*(*mCellBoard)[5])[7]->chip->colour = GameSide::Brown;
-		(*(*mCellBoard)[5])[0]->chip = ref new Chip();
-		(*(*mCellBoard)[5])[0]->chip->type = ChipType::Regular;
-		(*(*mCellBoard)[5])[0]->chip->colour = GameSide::Brown;
-		(*(*mCellBoard)[5])[2]->chip = ref new Chip();
-		(*(*mCellBoard)[5])[2]->chip->type = ChipType::Regular;
-		(*(*mCellBoard)[5])[2]->chip->colour = GameSide::Brown;
-		(*(*mCellBoard)[5])[4]->chip = ref new Chip();
-		(*(*mCellBoard)[5])[4]->chip->type = ChipType::Regular;
-		(*(*mCellBoard)[5])[4]->chip->colour = GameSide::Brown;
-		(*(*mCellBoard)[5])[6]->chip = ref new Chip();
-		(*(*mCellBoard)[5])[6]->chip->type = ChipType::Regular;
-		(*(*mCellBoard)[5])[6]->chip->colour = GameSide::Brown;
-		(*(*mCellBoard)[5])[1]->chip = ref new Chip();
-		(*(*mCellBoard)[5])[1]->chip->type = ChipType::Regular;
-		(*(*mCellBoard)[5])[1]->chip->colour = GameSide::Brown;
-		(*(*mCellBoard)[5])[3]->chip = ref new Chip();
-		(*(*mCellBoard)[5])[3]->chip->type = ChipType::Regular;
-		(*(*mCellBoard)[5])[3]->chip->colour = GameSide::Brown;
-		(*(*mCellBoard)[5])[5]->chip = ref new Chip();
-		(*(*mCellBoard)[5])[5]->chip->type = ChipType::Regular;
-		(*(*mCellBoard)[5])[5]->chip->colour = GameSide::Brown;
-		(*(*mCellBoard)[5])[7]->chip = ref new Chip();
-		(*(*mCellBoard)[5])[7]->chip->type = ChipType::Regular;
-		(*(*mCellBoard)[5])[7]->chip->colour = GameSide::Brown;
+		(*(*mCellBoard)[6])[0]->chip = ref new Chip();
+		(*(*mCellBoard)[6])[0]->chip->type = ChipType::Regular;
+		(*(*mCellBoard)[6])[0]->chip->colour = GameSide::Brown;
+		(*(*mCellBoard)[6])[2]->chip = ref new Chip();
+		(*(*mCellBoard)[6])[2]->chip->type = ChipType::Regular;
+		(*(*mCellBoard)[6])[2]->chip->colour = GameSide::Brown;
+		(*(*mCellBoard)[6])[4]->chip = ref new Chip();
+		(*(*mCellBoard)[6])[4]->chip->type = ChipType::Regular;
+		(*(*mCellBoard)[6])[4]->chip->colour = GameSide::Brown;
+		(*(*mCellBoard)[6])[6]->chip = ref new Chip();
+		(*(*mCellBoard)[6])[6]->chip->type = ChipType::Regular;
+		(*(*mCellBoard)[6])[6]->chip->colour = GameSide::Brown;
+		(*(*mCellBoard)[7])[1]->chip = ref new Chip();
+		(*(*mCellBoard)[7])[1]->chip->type = ChipType::Regular;
+		(*(*mCellBoard)[7])[1]->chip->colour = GameSide::Brown;
+		(*(*mCellBoard)[7])[3]->chip = ref new Chip();
+		(*(*mCellBoard)[7])[3]->chip->type = ChipType::Regular;
+		(*(*mCellBoard)[7])[3]->chip->colour = GameSide::Brown;
+		(*(*mCellBoard)[7])[5]->chip = ref new Chip();
+		(*(*mCellBoard)[7])[5]->chip->type = ChipType::Regular;
+		(*(*mCellBoard)[7])[5]->chip->colour = GameSide::Brown;
+		(*(*mCellBoard)[7])[7]->chip = ref new Chip();
+		(*(*mCellBoard)[7])[7]->chip->type = ChipType::Regular;
+		(*(*mCellBoard)[7])[7]->chip->colour = GameSide::Brown;
 	}
 	else {
 		(*(*mCellBoard)[0])[0]->chip = ref new Chip();
@@ -267,4 +268,8 @@ void Board::populateBoard(GameSide side) {
 		(*(*mCellBoard)[5])[7]->chip->type = ChipType::Regular;
 		(*(*mCellBoard)[5])[7]->chip->colour = GameSide::White;
 	}
+}
+
+std::map<std::pair<int, int>, std::vector<Move^>*>* Board::getMoveAvailibilityPassMap() {
+	return mMoveAvailibilityPassMap;
 }

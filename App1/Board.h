@@ -31,13 +31,13 @@ namespace App1 {
 		void moveAvailibilityPass();
 	internal:
 		std::vector<std::pair<int, int>> findMovesForCurrentChip();
-		std::map<std::pair<int, int>*, std::vector<Move^>*>* getMoveAvailibilityPassMap();
+		std::map<std::pair<int, int>, std::vector<Move^>*>* getMoveAvailibilityPassMap();
 		std::vector<std::vector<Cell^>*>* getCellBoard();
 	private:
 		Board();
 		GameSide mGameSide;
 		static Board^ mInstance;
-		std::map<std::pair<int, int>*, std::vector<Move^>*>* mMoveAvailibilityPassMap;
+		std::map<std::pair<int, int>, std::vector<Move^>*>* mMoveAvailibilityPassMap;
 		std::vector<std::vector<Cell^>*>* mCellBoard;
 	};
 }
