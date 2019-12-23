@@ -309,15 +309,15 @@ void Board::move(Move^ move) {
 }
 
 void Board::moveFromJson(JsonObject^ jsonMove) {
-	int fromX = jsonMove->GetNamedNumber("fromX");
-	int fromY = jsonMove->GetNamedNumber("fromY");
-	int toX = jsonMove->GetNamedNumber("toX");
-	int toY = jsonMove->GetNamedNumber("toY");
+	int fromX = 7 - jsonMove->GetNamedNumber("fromX");
+	int fromY = 7 - jsonMove->GetNamedNumber("fromY");
+	int toX = 7 - jsonMove->GetNamedNumber("toX");
+	int toY = 7 - jsonMove->GetNamedNumber("toY");
 	bool isCutting = jsonMove->GetNamedBoolean("isCutting");
 	int cX, cY;
 	if (isCutting) {
-		cX = jsonMove->GetNamedNumber("cuttedX");
-		cY = jsonMove->GetNamedNumber("cuttedY");
+		cX = 7 - jsonMove->GetNamedNumber("cuttedX");
+		cY = 7 - jsonMove->GetNamedNumber("cuttedY");
 	}
 	auto tchip = (*(*mCellBoard)[fromY])[fromX]->chip;
 	(*(*mCellBoard)[toY])[toX]->chip = tchip;

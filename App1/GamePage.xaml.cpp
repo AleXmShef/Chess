@@ -138,5 +138,7 @@ void GamePage::updateBoard() {
 			else
 				timg->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/White.png"));
 		}
+		else
+			timg->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/Blank.png"));
 	}
 }
