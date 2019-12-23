@@ -92,8 +92,8 @@ void GamePage::ChipOffFocus(Platform::Object^ sender, Windows::UI::Xaml::Input::
 }
 
 void GamePage::ChipButtonClick(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ e) {
-	/*int x = BoardGrid->GetColumn((Image^)sender);
-	int y = BoardGrid->GetRow((Image^)sender);
+	int x = BoardGrid->GetColumn((Image^)sender);
+	int y = 7 - BoardGrid->GetRow((Image^)sender);
 	if (!isAnyChipSelected) {
 		if ((*(*mCellBoard)[y])[x]->chip != nullptr && mMoveMap->count(std::pair<int, int>(x, y)) > 0) {
 			if ((*(*mCellBoard)[y])[x]->chip->colour == GameSide::Brown)
@@ -112,9 +112,9 @@ void GamePage::ChipButtonClick(Platform::Object^ sender, Windows::UI::Xaml::Inpu
 		auto mMoveVec = mMoveMap->at(std::pair<int,int>(x,y));
 		for (int i = 0; i < mMoveVec->size(); i++) {
 			if ((*mMoveVec)[i]->toXY.first == x && (*mMoveVec)[i]->toXY.second == y)
-				xC++;
+				
 		}
-	}*/
+	}
 }
 
 void GamePage::updateBoard() {

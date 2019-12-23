@@ -159,7 +159,12 @@ JsonObject^ Game::requestHandler(JsonObject^ jsonRequest) {
 
 	}
 	else if (requestType == "YourMove") {
-
+		if (mGameStatus == gameStatus::MyMove) {
+			auto respJson = ref new JsonObject();
+			respJson->Insert("requestType", JsonValue::CreateStringValue("MyMove"));
+			respJson->Insert("requestContent", JsonValue::CreateStringValue("Await"));
+			sendJson(respJson, mSocket);
+		}
 	}
 	else if (requestType == "Consiede") {
 
@@ -193,16 +198,29 @@ void Game::responseHandler(JsonObject^ jsonResponse) {
 	}
 	if (responseType == "WhichSide") {
 		auto side = jsonResponse->GetNamedString("responseContent");
-		if (side == "White")
+		if (side == "White") {
 			mGameSide = GameSide::White;
-		else
+			mGameStatus = gameStatus::MyMove;
+		}
+		else {
 			mGameSide = GameSide::Brown;
+			mGameStatus = gameStatus::NotMyMove;
+
+		}
+		mBoard = Board::getInstance();
+		mBoard->populateBoard(mGameSide);
 		while (mGamePage == nullptr) {
 
 		};
 		mGamePage->Dispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([this]() {
 			this->mGamePage->populateBoard();
 		}));
+		if (responseType == "MyMove") {
+			auto content = jsonResponse->GetNamedString("responseContent");
+			if (content = "Await") {
+
+			}
+		}
 	}
 }
 
@@ -277,4 +295,19 @@ task<JsonObject^> Game::recieveJson(Sockets::StreamSocket^ socket) {
 
 GameSide Game::getGameSide() {
 	return mGameSide;
+}
+
+void Game::awaitMoveClient() {
+	auto status = mGameStatus;
+	while (mGameStatus == status) {
+		auto mJson = ref new JsonObject;
+		mJson->Insert("requestType", JsonValue::CreateStringValue("YourMove"));
+		sendJson(mJson, mSocket);
+		recieveJson(mSocket).then([this](JsonObject^ resp) 
+			{
+				responseHandler(resp);
+			});
+		Sleep(2000);
+		OutputDebugString(L"Test\n");
+	}
 }

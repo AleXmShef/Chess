@@ -36,6 +36,7 @@ namespace App1 {
 		gameStatus getGameStatus();
 	private:
 		Game();
+		void awaitMoveClient();
 		void Init();
 		void sendJson(JsonObject^ jsonParam, Sockets::StreamSocket^ socket);
 		task<JsonObject^> recieveJson(Sockets::StreamSocket^ socket);
