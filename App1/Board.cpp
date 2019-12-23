@@ -305,6 +305,9 @@ void Board::move(Move^ move) {
 	if (move->isCutting) {
 		(*(*mCellBoard)[y])[x]->chip = nullptr;
 	}
+	if (move->toXY.second == 7) {
+		(*(*mCellBoard)[move->toXY.second])[move->toXY.first]->chip->type = ChipType::Queen;
+	}
 	Game::getInstance()->sendMove(jsonMove);
 }
 
@@ -324,5 +327,8 @@ void Board::moveFromJson(JsonObject^ jsonMove) {
 	(*(*mCellBoard)[fromY])[fromX]->chip = nullptr;
 	if (isCutting) {
 		(*(*mCellBoard)[cY])[cX]->chip = nullptr;
+	}
+	if (toY == 0) {
+		(*(*mCellBoard)[toY])[toX]->chip->type = ChipType::Queen;
 	}
 }

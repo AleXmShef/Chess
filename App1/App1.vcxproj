@@ -223,6 +223,8 @@
   <ItemGroup>
     <Image Include="Assets\Blank-selected.png" />
     <Image Include="Assets\Blank.png" />
+    <Image Include="Assets\Brown-crown-selected.png" />
+    <Image Include="Assets\Brown-crown.png" />
     <Image Include="Assets\Brown-selected.png" />
     <Image Include="Assets\Brown.png" />
     <Image Include="Assets\Checkerboard.jpg" />
@@ -235,6 +237,8 @@
     <Image Include="Assets\StoreLogo.png" />
     <Image Include="Assets\WelcomeBackground.jpeg" />
     <Image Include="Assets\WelcomeBackground.png" />
+    <Image Include="Assets\White-crown-selected.png" />
+    <Image Include="Assets\White-crown.png" />
     <Image Include="Assets\White-selected.png" />
     <Image Include="Assets\White.png" />
     <Image Include="Assets\Wide310x150Logo.scale-200.png" />
