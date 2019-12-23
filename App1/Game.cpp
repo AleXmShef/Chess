@@ -162,8 +162,8 @@ JsonObject^ Game::requestHandler(JsonObject^ jsonRequest) {
 	else if (requestType == "YourMove") {
 		if (mGameStatus == gameStatus::MyMove) {
 			auto respJson = ref new JsonObject();
-			respJson->Insert("requestType", JsonValue::CreateStringValue("MyMove"));
-			respJson->Insert("requestContent", JsonValue::CreateStringValue("Await"));
+			respJson->Insert("responseType", JsonValue::CreateStringValue("MyMove"));
+			respJson->Insert("responseContent", JsonValue::CreateStringValue("Await"));
 			return respJson;
 		}
 	}
@@ -220,11 +220,11 @@ void Game::responseHandler(JsonObject^ jsonResponse) {
 		mGamePage->Dispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([this]() {
 			this->mGamePage->populateBoard();
 		}));
-		if (responseType == "MyMove") {
-			auto content = jsonResponse->GetNamedString("responseContent");
-			if (content = "Await") {
+	}
+	if (responseType == "MyMove") {
+		auto content = jsonResponse->GetNamedString("responseContent");
+		if (content == "Await") {
 
-			}
 		}
 	}
 }
