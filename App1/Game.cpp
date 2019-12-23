@@ -53,6 +53,7 @@ void Game::sendInvitation(String^ serverHost) {
 		try {
 			previousTask.get();
 			mSocket = socket;
+			isServer = false;
 			mReader = ref new DataReader(mSocket->InputStream);
 			mWriter = ref new DataWriter(mSocket->OutputStream);
 			auto requestJson = ref new JsonObject();
@@ -157,7 +158,10 @@ JsonObject^ Game::requestHandler(JsonObject^ jsonRequest) {
 		return responseJson;
 	}
 	else if (requestType == "MyMove") {
-
+		auto requestContent = jsonRequest->GetNamedString("requestContent");
+		if (requestContent == "MoveReady") {
+			mBoard->moveFromJson(jsonRequest);
+		}
 	}
 	else if (requestType == "YourMove") {
 		if (mGameStatus == gameStatus::MyMove) {
@@ -165,6 +169,9 @@ JsonObject^ Game::requestHandler(JsonObject^ jsonRequest) {
 			respJson->Insert("responseType", JsonValue::CreateStringValue("MyMove"));
 			respJson->Insert("responseContent", JsonValue::CreateStringValue("Await"));
 			return respJson;
+		}
+		else if (mGameStatus == gameStatus::NotMyMove) {
+			return mMyLastMove;
 		}
 	}
 	else if (requestType == "Consiede") {
@@ -226,6 +233,9 @@ void Game::responseHandler(JsonObject^ jsonResponse) {
 		if (content == "Await") {
 
 		}
+		else if (content == "MoveReady") {
+			mBoard->moveFromJson(jsonResponse);
+		}
 	}
 }
 
@@ -251,10 +261,10 @@ void Game::sendJson(JsonObject^ jsonParam, Sockets::StreamSocket^ socket) {
 		{
 			try {
 				writeTask.get();
-				OutputDebugString(L"Json sent successfully");
+				OutputDebugString(L"Json sent successfully\n");
 			}
 			catch (Exception ^ e) {
-				OutputDebugString(L"Failed to send json");
+				OutputDebugString(L"Failed to send json\n");
 				delete socket;
 			}
 		});
@@ -316,3 +326,20 @@ void Game::awaitMoveClient() {
 		OutputDebugString(L"Test\n");
 	}
 }
+
+void Game::sendMove(JsonObject^ jsonMove) {
+	mGameStatus = gameStatus::NotMyMove;
+	if (!isServer) {
+		jsonMove->Insert("requestType", JsonValue::CreateStringValue("MyMove"));
+		jsonMove->Insert("requestContent", JsonValue::CreateStringValue("MoveReady"));
+		sendJson(jsonMove, mSocket);
+	}
+	else {
+		jsonMove->Insert("responseType", JsonValue::CreateStringValue("MyMove"));
+		jsonMove->Insert("responseContent", JsonValue::CreateStringValue("MoveReady"));
+		mMyLastMove = jsonMove;
+	}
+	mGamePage->Dispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([this]() {
+		this->mGamePage->updateBoard();
+	}));
+};

@@ -1,7 +1,10 @@
 #include "pch.h"
 #include "Board.h"
+#include "Game.h"
 
 using namespace App1;
+
+using namespace Windows::Data::Json;
 
 Board^ Board::mInstance = nullptr;
 
@@ -17,6 +20,7 @@ Board::Board() {
 };
 
 void Board::moveAvailibilityPass() {
+	mMoveAvailibilityPassMap->clear();
 	mMoveAvailibilityPassMap = new std::map<std::pair<int, int>, std::vector<Move^>*>;
 	bool areCutting = false;
 	//first pass to set areCutting flag
@@ -272,4 +276,53 @@ void Board::populateBoard(GameSide side) {
 
 std::map<std::pair<int, int>, std::vector<Move^>*>* Board::getMoveAvailibilityPassMap() {
 	return mMoveAvailibilityPassMap;
+}
+
+void Board::move(Move^ move) {
+	auto tchip = (*(*mCellBoard)[move->fromXY.second])[move->fromXY.first]->chip;
+	auto jsonMove = ref new JsonObject();
+	jsonMove->Insert("fromX", JsonValue::CreateNumberValue(move->fromXY.first));
+	jsonMove->Insert("fromY", JsonValue::CreateNumberValue(move->fromXY.second));
+	jsonMove->Insert("toX", JsonValue::CreateNumberValue(move->toXY.first));
+	jsonMove->Insert("toY", JsonValue::CreateNumberValue(move->toXY.second));
+	jsonMove->Insert("isCutting", JsonValue::CreateBooleanValue(move->isCutting));
+	int x;
+	int y;
+	if (move->isCutting) {
+		for (int i = 0; i < 8; i++) {
+			for (int j = 0; j < 8; j++) {
+				if ((*(*mCellBoard)[i])[j]->chip = move->cuttedChip) {
+					x = j;
+					y = i;
+				}
+			}
+		}
+		jsonMove->Insert("cuttedChipX", JsonValue::CreateNumberValue(x));
+		jsonMove->Insert("cuttedChipY", JsonValue::CreateNumberValue(y));
+	}
+	(*(*mCellBoard)[move->toXY.second])[move->toXY.first]->chip = tchip;
+	(*(*mCellBoard)[move->fromXY.second])[move->fromXY.first]->chip = nullptr;
+	if (move->isCutting) {
+		(*(*mCellBoard)[y])[x]->chip = nullptr;
+	}
+	Game::getInstance()->sendMove(jsonMove);
+}
+
+void Board::moveFromJson(JsonObject^ jsonMove) {
+	int fromX = jsonMove->GetNamedNumber("fromX");
+	int fromY = jsonMove->GetNamedNumber("fromY");
+	int toX = jsonMove->GetNamedNumber("toX");
+	int toY = jsonMove->GetNamedNumber("toY");
+	bool isCutting = jsonMove->GetNamedBoolean("isCutting");
+	int cX, cY;
+	if (isCutting) {
+		cX = jsonMove->GetNamedNumber("cuttedX");
+		cY = jsonMove->GetNamedNumber("cuttedY");
+	}
+	auto tchip = (*(*mCellBoard)[fromY])[fromX]->chip;
+	(*(*mCellBoard)[toY])[toX]->chip = tchip;
+	(*(*mCellBoard)[fromY])[fromX]->chip = nullptr;
+	if (isCutting) {
+		(*(*mCellBoard)[cY])[cX]->chip = nullptr;
+	}
 }

@@ -29,8 +29,7 @@ namespace App1 {
 		static Game^ getInstance();
 		String^ getStringIP();
 		void sendInvitation(String^ serverHost);
-		//void acceptInvitation();
-		//void declineInvitation();
+		void sendMove(JsonObject^ jsonMove);
 		void registerFindPage(GameFindPage^ page);
 		void registerGamePage(GamePage^ page);
 		gameStatus getGameStatus();
@@ -48,6 +47,8 @@ namespace App1 {
 		JsonObject^ requestHandler(JsonObject^ jsonRequest);
 		void responseHandler(JsonObject^ jsonResponse);
 	private:
+		JsonObject^ mMyLastMove;
+		bool isServer = true;
 		DataWriter^ mWriter;
 		DataReader^ mReader;
 		gameStatus mGameStatus = gameStatus::Idle;

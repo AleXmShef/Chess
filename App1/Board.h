@@ -25,7 +25,8 @@ namespace App1 {
 	ref class Board sealed
 	{
 	public:
-		//void move();
+		void move(Move^ move);
+		void moveFromJson(Windows::Data::Json::JsonObject^ jsonMove);
 		static Board^ getInstance();
 		void populateBoard(GameSide side);
 		void moveAvailibilityPass();
