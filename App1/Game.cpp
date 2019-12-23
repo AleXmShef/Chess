@@ -161,6 +161,10 @@ JsonObject^ Game::requestHandler(JsonObject^ jsonRequest) {
 		auto requestContent = jsonRequest->GetNamedString("requestContent");
 		if (requestContent == "MoveReady") {
 			mBoard->moveFromJson(jsonRequest);
+			mGameStatus = gameStatus::MyMove;
+			mGamePage->Dispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([this]() {
+				mGamePage->updateBoard();
+			}));
 		}
 	}
 	else if (requestType == "YourMove") {
@@ -326,7 +330,7 @@ void Game::awaitMoveClient() {
 			{
 				responseHandler(resp);
 			});
-		Sleep(5000);
+		Sleep(1000);
 		OutputDebugString(L"Test\n");
 	}
 }
