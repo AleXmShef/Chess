@@ -114,7 +114,7 @@ void GamePage::ChipButtonClick(Platform::Object^ sender, Windows::UI::Xaml::Inpu
 			int xC = selectedChip.first;
 			int yC = selectedChip.second;
 			auto mChip = (*(*mCellBoard)[yC])[xC]->chip;
-			auto mMoveVec = mMoveMap->at(std::pair<int, int>(x, y));
+			auto mMoveVec = mMoveMap->at(std::pair<int, int>(xC, yC));
 			for (int i = 0; i < mMoveVec->size(); i++) {
 				if ((*mMoveVec)[i]->toXY.first == x && (*mMoveVec)[i]->toXY.second == y)
 					mBoard->move((*mMoveVec)[i]);
@@ -124,6 +124,7 @@ void GamePage::ChipButtonClick(Platform::Object^ sender, Windows::UI::Xaml::Inpu
 }
 
 void GamePage::updateBoard() {
+	isAnyChipSelected = false;
 	mCellBoard = mBoard->getCellBoard();
 	mBoard->moveAvailibilityPass();
 	mMoveMap = mBoard->getMoveAvailibilityPassMap();

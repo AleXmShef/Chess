@@ -235,6 +235,9 @@ void Game::responseHandler(JsonObject^ jsonResponse) {
 		}
 		else if (content == "MoveReady") {
 			mBoard->moveFromJson(jsonResponse);
+			mGamePage->Dispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([this]() {
+				this->mGamePage->updateBoard();
+			}));
 		}
 	}
 }

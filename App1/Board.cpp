@@ -20,7 +20,7 @@ Board::Board() {
 };
 
 void Board::moveAvailibilityPass() {
-	mMoveAvailibilityPassMap->clear();
+	//mMoveAvailibilityPassMap->clear();
 	mMoveAvailibilityPassMap = new std::map<std::pair<int, int>, std::vector<Move^>*>;
 	bool areCutting = false;
 	//first pass to set areCutting flag
