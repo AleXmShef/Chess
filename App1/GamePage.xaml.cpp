@@ -112,7 +112,7 @@ void GamePage::ChipButtonClick(Platform::Object^ sender, Windows::UI::Xaml::Inpu
 		auto mMoveVec = mMoveMap->at(std::pair<int,int>(x,y));
 		for (int i = 0; i < mMoveVec->size(); i++) {
 			if ((*mMoveVec)[i]->toXY.first == x && (*mMoveVec)[i]->toXY.second == y)
-				
+				xC++;
 		}
 	}
 }

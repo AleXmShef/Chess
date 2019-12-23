@@ -142,6 +142,7 @@ JsonObject^ Game::requestHandler(JsonObject^ jsonRequest) {
 	}
 	else if (requestType == "WhichSide") {
 		mGameSide = GameSide::White;
+		mGameStatus = gameStatus::MyMove;
 		mBoard = Board::getInstance();
 		mBoard->populateBoard(mGameSide);
 		while (mGamePage == nullptr) {
@@ -163,7 +164,7 @@ JsonObject^ Game::requestHandler(JsonObject^ jsonRequest) {
 			auto respJson = ref new JsonObject();
 			respJson->Insert("requestType", JsonValue::CreateStringValue("MyMove"));
 			respJson->Insert("requestContent", JsonValue::CreateStringValue("Await"));
-			sendJson(respJson, mSocket);
+			return respJson;
 		}
 	}
 	else if (requestType == "Consiede") {
@@ -205,7 +206,11 @@ void Game::responseHandler(JsonObject^ jsonResponse) {
 		else {
 			mGameSide = GameSide::Brown;
 			mGameStatus = gameStatus::NotMyMove;
-
+			auto workItem = ref new Windows::System::Threading::WorkItemHandler([this](IAsyncAction^ workItem)
+				{
+					awaitMoveClient();
+				});
+			auto asyncAction = Windows::System::Threading::ThreadPool::RunAsync(workItem);
 		}
 		mBoard = Board::getInstance();
 		mBoard->populateBoard(mGameSide);
@@ -307,7 +312,7 @@ void Game::awaitMoveClient() {
 			{
 				responseHandler(resp);
 			});
-		Sleep(2000);
+		Sleep(5000);
 		OutputDebugString(L"Test\n");
 	}
 }
