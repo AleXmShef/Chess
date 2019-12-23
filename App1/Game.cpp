@@ -339,7 +339,6 @@ void Game::awaitMoveClient() {
 }
 
 void Game::sendMove(JsonObject^ jsonMove) {
-	mGameStatus = gameStatus::NotMyMove;
 	if (!isServer) {
 		jsonMove->Insert("requestType", JsonValue::CreateStringValue("MyMove"));
 		jsonMove->Insert("requestContent", JsonValue::CreateStringValue("MoveReady"));
@@ -358,4 +357,5 @@ void Game::sendMove(JsonObject^ jsonMove) {
 	mGamePage->Dispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([this]() {
 		this->mGamePage->updateBoard();
 	}));
+	mGameStatus = gameStatus::NotMyMove;
 };

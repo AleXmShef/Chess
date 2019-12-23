@@ -317,7 +317,7 @@ void Board::moveFromJson(JsonObject^ jsonMove) {
 	int cX, cY;
 	if (isCutting) {
 		cX = 7 - jsonMove->GetNamedNumber("cuttedX");
-		cY = jsonMove->GetNamedNumber("cuttedY");
+		cY = 7 - jsonMove->GetNamedNumber("cuttedY");
 	}
 	auto tchip = (*(*mCellBoard)[fromY])[fromX]->chip;
 	(*(*mCellBoard)[toY])[toX]->chip = tchip;
