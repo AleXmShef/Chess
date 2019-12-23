@@ -30,6 +30,8 @@ namespace App1 {
 		String^ getStringIP();
 		void sendInvitation(String^ serverHost);
 		void sendMove(JsonObject^ jsonMove);
+		void winMessage();
+		void loseMessage();
 		void registerFindPage(GameFindPage^ page);
 		void registerGamePage(GamePage^ page);
 		gameStatus getGameStatus();

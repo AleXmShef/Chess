@@ -26,6 +26,8 @@ namespace App1
 		GamePage();
 		void populateBoard();
 		void updateBoard();
+		void showWinDialog();
+		void showLoseDialog();
 	private:
 		bool isAnyChipSelected = false;
 		std::pair<int, int> selectedChip;
