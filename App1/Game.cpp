@@ -327,6 +327,7 @@ void Game::awaitMoveClient() {
 	recieveJson(mSocket).then([this](JsonObject^ resp) 
 		{
 			responseHandler(resp);
+			awaitMoveClient();
 		});
 }
 
@@ -344,11 +345,5 @@ void Game::sendMove(JsonObject^ jsonMove) {
 		this->mGamePage->updateBoard();
 	}));
 	mGameStatus = gameStatus::NotMyMove;
-	if (!isServer) {
-		auto workItem = ref new Windows::System::Threading::WorkItemHandler([this](IAsyncAction^ workItem)
-			{
-				awaitMoveClient();
-			});
-		auto asyncAction = Windows::System::Threading::ThreadPool::RunAsync(workItem);
-	}
+
 };
