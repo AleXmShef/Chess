@@ -169,10 +169,8 @@ void GamePage::updateBoard() {
 }
 
 void GamePage::showLoseDialog() {
-	create_task(LoseDialog->ShowAsync()).then([this]()
+	create_task(this->LoseDialog->ShowAsync()).then([this](ContentDialogResult res)
 		{
-			delete mGame;
-			delete mBoard;
 			auto rootFrame = dynamic_cast<Windows::UI::Xaml::Controls::Frame^>(Window::Current->Content);
 			if (!rootFrame->Navigate(TypeName(MainPage::typeid))) {
 				OutputDebugString(L"Failed to navigate to settings screen\n");
@@ -180,10 +178,8 @@ void GamePage::showLoseDialog() {
 		});
 }
 void GamePage::showWinDialog() {
-	create_task(WinDialog->ShowAsync()).then([this]()
+	create_task(this->WinDialog->ShowAsync()).then([this](ContentDialogResult res)
 		{
-			delete mGame;
-			delete mBoard;
 			auto rootFrame = dynamic_cast<Windows::UI::Xaml::Controls::Frame^>(Window::Current->Content);
 			if (!rootFrame->Navigate(TypeName(MainPage::typeid))) {
 				OutputDebugString(L"Failed to navigate to settings screen\n");
