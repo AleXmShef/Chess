@@ -225,6 +225,7 @@
     <Image Include="Assets\Blank.png" />
     <Image Include="Assets\Brown-selected.png" />
     <Image Include="Assets\Brown.png" />
+    <Image Include="Assets\Checkerboard.jpg" />
     <Image Include="Assets\cross-out-clipart-5.png" />
     <Image Include="Assets\LockScreenLogo.scale-200.png" />
     <Image Include="Assets\SplashScreen.scale-200.png" />

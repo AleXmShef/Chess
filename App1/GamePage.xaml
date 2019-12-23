@@ -8,13 +8,15 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Viewbox>
-        <Grid>
+        <Grid Height="1080">
+            <Image Source="/Assets/WelcomeBackground.png" Stretch="UniformToFill"/>
             <Grid x:Name="ScreenGrid" Width="1920" Height="1080">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="9*"/>
                     <ColumnDefinition Width="7*"/>
                 </Grid.ColumnDefinitions>
-                <Grid x:Name="BoardGrid">
+                <Image Source="/Assets/Checkerboard.jpg" Stretch="Fill"></Image>
+                <Grid x:Name="BoardGrid" Margin="70,70,68,70">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*"/>
                         <ColumnDefinition Width="1*"/>
@@ -36,7 +38,10 @@
                         <RowDefinition Height="1*"/>
                     </Grid.RowDefinitions>
                 </Grid>
-                <Rectangle Grid.Column="1" Fill="#FFD01818"></Rectangle>
+                <Rectangle Grid.Column="1" Stroke="Black"  Fill="#7F858585" FocusVisualPrimaryBrush="White" StrokeDashCap="Flat" StrokeThickness="0">
+                </Rectangle>
+                <TextBlock Text="Quit" Grid.Column="1" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="90" FocusVisualPrimaryBrush="#FFD4D4D4" Foreground="#FFD4D4D4" FontWeight="Bold" FontStyle="Normal" Margin="0,800,0,0"/>
+                <TextBlock Text="Cansiede" Grid.Column="1" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="90" FocusVisualPrimaryBrush="#FFD4D4D4" Foreground="#FFD4D4D4" FontWeight="Bold" FontStyle="Normal" Margin="0,400,0,0"/>
             </Grid>
         </Grid>
     </Viewbox>
