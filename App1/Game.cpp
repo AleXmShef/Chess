@@ -324,38 +324,31 @@ GameSide Game::getGameSide() {
 }
 
 void Game::awaitMoveClient() {
-	auto status = mGameStatus;
-	while (mGameStatus == status) {
-		auto mJson = ref new JsonObject;
-		mJson->Insert("requestType", JsonValue::CreateStringValue("YourMove"));
-		sendJson(mJson, mSocket);
-		recieveJson(mSocket).then([this](JsonObject^ resp) 
-			{
-				responseHandler(resp);
-			});
-		Sleep(1000);
-		OutputDebugString(L"Test\n");
-	}
+	recieveJson(mSocket).then([this](JsonObject^ resp) 
+		{
+			responseHandler(resp);
+		});
 }
 
 void Game::sendMove(JsonObject^ jsonMove) {
 	if (!isServer) {
 		jsonMove->Insert("requestType", JsonValue::CreateStringValue("MyMove"));
 		jsonMove->Insert("requestContent", JsonValue::CreateStringValue("MoveReady"));
-		sendJson(jsonMove, mSocket);
+	}
+	else {
+		jsonMove->Insert("responseType", JsonValue::CreateStringValue("MyMove"));
+		jsonMove->Insert("responseContent", JsonValue::CreateStringValue("MoveReady"));
+	}
+	sendJson(jsonMove, mSocket);
+	mGamePage->Dispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([this]() {
+		this->mGamePage->updateBoard();
+	}));
+	mGameStatus = gameStatus::NotMyMove;
+	if (!isServer) {
 		auto workItem = ref new Windows::System::Threading::WorkItemHandler([this](IAsyncAction^ workItem)
 			{
 				awaitMoveClient();
 			});
 		auto asyncAction = Windows::System::Threading::ThreadPool::RunAsync(workItem);
 	}
-	else {
-		jsonMove->Insert("responseType", JsonValue::CreateStringValue("MyMove"));
-		jsonMove->Insert("responseContent", JsonValue::CreateStringValue("MoveReady"));
-		mMyLastMove = jsonMove;
-	}
-	mGamePage->Dispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([this]() {
-		this->mGamePage->updateBoard();
-	}));
-	mGameStatus = gameStatus::NotMyMove;
 };
