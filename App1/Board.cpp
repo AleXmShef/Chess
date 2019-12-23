@@ -291,14 +291,14 @@ void Board::move(Move^ move) {
 	if (move->isCutting) {
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 8; j++) {
-				if ((*(*mCellBoard)[i])[j]->chip = move->cuttedChip) {
+				if ((*(*mCellBoard)[i])[j]->chip == move->cuttedChip) {
 					x = j;
 					y = i;
 				}
 			}
 		}
-		jsonMove->Insert("cuttedChipX", JsonValue::CreateNumberValue(x));
-		jsonMove->Insert("cuttedChipY", JsonValue::CreateNumberValue(y));
+		jsonMove->Insert("cuttedX", JsonValue::CreateNumberValue(x));
+		jsonMove->Insert("cuttedY", JsonValue::CreateNumberValue(y));
 	}
 	(*(*mCellBoard)[move->toXY.second])[move->toXY.first]->chip = tchip;
 	(*(*mCellBoard)[move->fromXY.second])[move->fromXY.first]->chip = nullptr;
@@ -317,7 +317,7 @@ void Board::moveFromJson(JsonObject^ jsonMove) {
 	int cX, cY;
 	if (isCutting) {
 		cX = 7 - jsonMove->GetNamedNumber("cuttedX");
-		cY = 7 - jsonMove->GetNamedNumber("cuttedY");
+		cY = jsonMove->GetNamedNumber("cuttedY");
 	}
 	auto tchip = (*(*mCellBoard)[fromY])[fromX]->chip;
 	(*(*mCellBoard)[toY])[toX]->chip = tchip;

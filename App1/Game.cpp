@@ -165,6 +165,9 @@ JsonObject^ Game::requestHandler(JsonObject^ jsonRequest) {
 			mGamePage->Dispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([this]() {
 				mGamePage->updateBoard();
 			}));
+			auto responseJson = ref new JsonObject();
+			responseJson->Insert("responseType", JsonValue::CreateStringValue("OK boomer"));
+			return responseJson;
 		}
 	}
 	else if (requestType == "YourMove") {
@@ -341,6 +344,11 @@ void Game::sendMove(JsonObject^ jsonMove) {
 		jsonMove->Insert("requestType", JsonValue::CreateStringValue("MyMove"));
 		jsonMove->Insert("requestContent", JsonValue::CreateStringValue("MoveReady"));
 		sendJson(jsonMove, mSocket);
+		auto workItem = ref new Windows::System::Threading::WorkItemHandler([this](IAsyncAction^ workItem)
+			{
+				awaitMoveClient();
+			});
+		auto asyncAction = Windows::System::Threading::ThreadPool::RunAsync(workItem);
 	}
 	else {
 		jsonMove->Insert("responseType", JsonValue::CreateStringValue("MyMove"));
