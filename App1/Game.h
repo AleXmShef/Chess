@@ -32,6 +32,8 @@ namespace App1 {
 		void sendMove(JsonObject^ jsonMove);
 		void registerFindPage(GameFindPage^ page);
 		void registerGamePage(GamePage^ page);
+		void lose();
+		void win();
 		gameStatus getGameStatus();
 	private:
 		Game();

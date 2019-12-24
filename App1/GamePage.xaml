@@ -43,6 +43,16 @@
                 <TextBlock Text="Quit" Grid.Column="1" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="90" FocusVisualPrimaryBrush="#FFD4D4D4" Foreground="#FFD4D4D4" FontWeight="Bold" FontStyle="Normal" Margin="0,800,0,0"/>
                 <TextBlock Text="Cansiede" Grid.Column="1" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="90" FocusVisualPrimaryBrush="#FFD4D4D4" Foreground="#FFD4D4D4" FontWeight="Bold" FontStyle="Normal" Margin="0,400,0,0"/>
             </Grid>
+            <ContentDialog x:Name="WinDialog" PrimaryButtonText="Yayy" Background="#FFA0A0A0">
+                <TextBlock FontWeight="Bold" FontStyle="Normal" HorizontalAlignment="Center" FocusVisualPrimaryBrush="Black" Foreground="White" FontSize="24">
+                    Conglaculations! <LineBreak/>You've won this game!
+                </TextBlock>
+            </ContentDialog>
+            <ContentDialog x:Name="LoseDialog" PrimaryButtonText="Okay:(" Background="#FFA0A0A0">
+                <TextBlock FontWeight="Bold" FontStyle="Normal" HorizontalAlignment="Stretch" FocusVisualPrimaryBrush="Black" Foreground="White" FontSize="24">
+                    Unfortunately, you've lost this game:( <LineBreak/>Good luck next time!
+                </TextBlock>
+            </ContentDialog>
         </Grid>
     </Viewbox>
 </Page>

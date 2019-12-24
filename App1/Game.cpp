@@ -347,3 +347,19 @@ void Game::sendMove(JsonObject^ jsonMove) {
 	mGameStatus = gameStatus::NotMyMove;
 
 };
+
+void Game::lose() {
+	delete mSocket;
+	delete mServerSocket;
+	mGamePage->Dispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([this]() {
+		mGamePage->showLostDialog();
+	}));
+}
+
+void Game::win() {
+	delete mSocket;
+	delete mServerSocket;
+	mGamePage->Dispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([this]() {
+		mGamePage->showWinDialog();
+		}));
+}

@@ -5,6 +5,7 @@
 
 #include "pch.h"
 #include "GamePage.xaml.h"
+#include "MainPage.xaml.h"
 
 using namespace App1;
 
@@ -178,4 +179,24 @@ void GamePage::updateBoard() {
 		else
 			timg->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/Blank.png"));
 	}
+}
+
+void GamePage::showLostDialog() {
+	create_task(LoseDialog->ShowAsync()).then([this](ContentDialogResult res)
+		{
+			auto rootFrame = dynamic_cast<Windows::UI::Xaml::Controls::Frame^>(Window::Current->Content);
+			if (!rootFrame->Navigate(TypeName(MainPage::typeid))) {
+				OutputDebugString(L"Failed to navigate to settings screen\n");
+			}
+		});
+}
+
+void GamePage::showWinDialog() {
+	create_task(WinDialog->ShowAsync()).then([this](ContentDialogResult res)
+		{
+			auto rootFrame = dynamic_cast<Windows::UI::Xaml::Controls::Frame^>(Window::Current->Content);
+			if (!rootFrame->Navigate(TypeName(MainPage::typeid))) {
+				OutputDebugString(L"Failed to navigate to settings screen\n");
+			}
+		});
 }
