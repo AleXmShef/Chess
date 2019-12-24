@@ -94,6 +94,69 @@ void Board::moveAvailibilityPass() {
 							moveVec->push_back(tmove);
 						}
 					}
+					case ChipType::Queen:
+					{
+						if ((k + 1) < 8 && (l + 1) < 8 && ((*(*mCellBoard)[k + 1])[l + 1]->chip == nullptr)) {
+							auto tmove = ref new Move();
+							tmove->fromXY.first = l;
+							tmove->fromXY.second = k;
+							tmove->toXY.first = l + 1;
+							tmove->toXY.second = k + 1;
+							moveVec->push_back(tmove);
+						}
+						if ((k + 1) < 8 && (l - 1) >= 0 && ((*(*mCellBoard)[k + 1])[l - 1]->chip == nullptr)) {
+							auto tmove = ref new Move();
+							tmove->fromXY.first = l;
+							tmove->fromXY.second = k;
+							tmove->toXY.first = l - 1;
+							tmove->toXY.second = k + 1;
+							moveVec->push_back(tmove);
+						}
+						if ((k + 2) < 8 && (l + 2) < 8 && ((*(*mCellBoard)[k + 1])[l + 1]->chip != nullptr) && (*(*mCellBoard)[k + 1])[l + 1]->chip->colour != mGameSide) {
+							auto tmove = ref new Move();
+							tmove->fromXY.first = l;
+							tmove->fromXY.second = k;
+							tmove->toXY.first = l + 2;
+							tmove->toXY.second = k + 2;
+							tmove->isCutting = true;
+							areCutting = true;
+							tmove->cuttedChip = (*(*mCellBoard)[k + 1])[l + 1]->chip;
+							moveVec->push_back(tmove);
+						}
+						if ((k + 2) < 8 && (l - 2) >= 0 && (*(*mCellBoard)[k + 1])[l - 1]->chip != nullptr && (*(*mCellBoard)[k + 1])[l - 1]->chip->colour != mGameSide) {
+							auto tmove = ref new Move();
+							tmove->fromXY.first = l;
+							tmove->fromXY.second = k;
+							tmove->toXY.first = l - 2;
+							tmove->toXY.second = k + 2;
+							tmove->isCutting = true;
+							areCutting = true;
+							tmove->cuttedChip = (*(*mCellBoard)[k + 1])[l - 1]->chip;
+							moveVec->push_back(tmove);
+						}
+						if (k - 2 >= 0 && l + 2 < 8 && (*(*mCellBoard)[k - 1])[l + 1]->chip != nullptr && (*(*mCellBoard)[k - 1])[l + 1]->chip->colour != mGameSide) {
+							auto tmove = ref new Move();
+							tmove->fromXY.first = l;
+							tmove->fromXY.second = k;
+							tmove->toXY.first = l + 2;
+							tmove->toXY.second = k - 2;
+							tmove->isCutting = true;
+							areCutting = true;
+							tmove->cuttedChip = (*(*mCellBoard)[k - 1])[l + 1]->chip;
+							moveVec->push_back(tmove);
+						}
+						if ((k - 2) >= 0 && (l - 2) >= 0 && (*(*mCellBoard)[k - 1])[l - 1]->chip != nullptr && (*(*mCellBoard)[k - 1])[l - 1]->chip->colour != mGameSide) {
+							auto tmove = ref new Move();
+							tmove->fromXY.first = l;
+							tmove->fromXY.second = k;
+							tmove->toXY.first = l - 2;
+							tmove->toXY.second = k - 2;
+							tmove->isCutting = true;
+							areCutting = true;
+							tmove->cuttedChip = (*(*mCellBoard)[k - 1])[l - 1]->chip;
+							moveVec->push_back(tmove);
+						}
+					}
 					}
 				}
 				if (!moveVec->empty()) {
@@ -308,6 +371,18 @@ void Board::move(Move^ move) {
 	if (move->toXY.second == 7) {
 		(*(*mCellBoard)[move->toXY.second])[move->toXY.first]->chip->type = ChipType::Queen;
 	}
+	int opponentChips;
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			if ((*(*mCellBoard)[i])[j]->chip != nullptr)
+				if ((*(*mCellBoard)[i])[j]->chip->colour != mGameSide)
+					opponentChips++;
+		}
+	}
+	if (opponentChips == 0) {
+		//game won
+		OutputDebugString(L"Game won");
+	}
 	Game::getInstance()->sendMove(jsonMove);
 }
 
@@ -330,5 +405,17 @@ void Board::moveFromJson(JsonObject^ jsonMove) {
 	}
 	if (toY == 0) {
 		(*(*mCellBoard)[toY])[toX]->chip->type = ChipType::Queen;
+	}
+	int myChips;
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			if ((*(*mCellBoard)[i])[j]->chip != nullptr)
+				if ((*(*mCellBoard)[i])[j]->chip->colour == mGameSide)
+					myChips++;
+		}
+	}
+	if (myChips == 0) {
+		//game lost
+		OutputDebugString(L"Game lost");
 	}
 }
