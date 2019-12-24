@@ -102,8 +102,11 @@ void Game::serverOnConnectHandler(Sockets::StreamSocketListener^ socket, Sockets
 void Game::serverRequestHandler() {
 	recieveJson(mSocket).then([this](JsonObject^ requestJson)
 		{
-			sendJson(requestHandler(requestJson), mSocket);
-			serverRequestHandler();
+			auto responseJson = requestHandler(requestJson);
+			if (responseJson != nullptr) {
+				sendJson(responseJson, mSocket);
+				serverRequestHandler();
+			}
 		});
 }
 
@@ -186,6 +189,7 @@ JsonObject^ Game::requestHandler(JsonObject^ jsonRequest) {
 	}
 	else if (requestType == "Disconnect") {
 		closeGame();
+		return nullptr;
 	}
 }
 
@@ -365,14 +369,8 @@ void Game::win() {
 
 void Game::closeGame() {
 	if (mSocket != nullptr) {
-		auto jSon = ref new JsonObject();
-		if(isServer)
-			jSon->Insert("responseType", JsonValue::CreateStringValue("Disconnect"));
-		else {
-			jSon->Insert("requestType", JsonValue::CreateStringValue("Disconnect"));
+		if(!isServer)
 			clientAction->Cancel();
-		}
-		sendJson(jSon, mSocket);
 		delete mWriter;
 		delete mReader;
 		delete mSocket;
