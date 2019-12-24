@@ -34,6 +34,7 @@ namespace App1 {
 		void registerGamePage(GamePage^ page);
 		void lose();
 		void win();
+		void closeGame();
 		gameStatus getGameStatus();
 	private:
 		Game();
@@ -49,6 +50,7 @@ namespace App1 {
 		JsonObject^ requestHandler(JsonObject^ jsonRequest);
 		void responseHandler(JsonObject^ jsonResponse);
 	private:
+		IAsyncAction^ clientAction = nullptr;
 		JsonObject^ mMyLastMove;
 		bool isServer = true;
 		DataWriter^ mWriter;

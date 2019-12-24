@@ -381,11 +381,11 @@ void Board::move(Move^ move) {
 					opponentChips++;
 		}
 	}
+	Game::getInstance()->sendMove(jsonMove);
 	if (opponentChips == 0) {
-		//game won
+		Game::getInstance()->win();
 		OutputDebugString(L"Game won");
 	}
-	Game::getInstance()->sendMove(jsonMove);
 }
 
 void Board::moveFromJson(JsonObject^ jsonMove) {
@@ -417,7 +417,7 @@ void Board::moveFromJson(JsonObject^ jsonMove) {
 		}
 	}
 	if (myChips == 0) {
-		//game lost
-		OutputDebugString(L"Game lost");
+		Game::getInstance()->lose();
+		OutputDebugString(L"Game lost\n");
 	}
 }

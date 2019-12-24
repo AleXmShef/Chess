@@ -184,8 +184,8 @@ JsonObject^ Game::requestHandler(JsonObject^ jsonRequest) {
 	else if (requestType == "Consiede") {
 
 	}
-	else {
-
+	else if (requestType == "Disconnect") {
+		closeGame();
 	}
 }
 
@@ -224,7 +224,7 @@ void Game::responseHandler(JsonObject^ jsonResponse) {
 				{
 					awaitMoveClient();
 				});
-			auto asyncAction = Windows::System::Threading::ThreadPool::RunAsync(workItem);
+			clientAction = Windows::System::Threading::ThreadPool::RunAsync(workItem);
 		}
 		mBoard = Board::getInstance();
 		mBoard->populateBoard(mGameSide);
@@ -247,6 +247,9 @@ void Game::responseHandler(JsonObject^ jsonResponse) {
 				this->mGamePage->updateBoard();
 			}));
 		}
+	}
+	else if (responseType == "Disconnect") {
+		closeGame();
 	}
 }
 
@@ -349,17 +352,34 @@ void Game::sendMove(JsonObject^ jsonMove) {
 };
 
 void Game::lose() {
-	delete mSocket;
-	delete mServerSocket;
 	mGamePage->Dispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([this]() {
 		mGamePage->showLostDialog();
 	}));
 }
 
 void Game::win() {
-	delete mSocket;
-	delete mServerSocket;
 	mGamePage->Dispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([this]() {
 		mGamePage->showWinDialog();
 		}));
+}
+
+void Game::closeGame() {
+	if (mSocket != nullptr) {
+		auto jSon = ref new JsonObject();
+		if(isServer)
+			jSon->Insert("responseType", JsonValue::CreateStringValue("Disconnect"));
+		else {
+			jSon->Insert("requestType", JsonValue::CreateStringValue("Disconnect"));
+			clientAction->Cancel();
+		}
+		sendJson(jSon, mSocket);
+		delete mWriter;
+		delete mReader;
+		delete mSocket;
+		mSocket = nullptr;
+		if (mServerSocket != nullptr) {
+			delete mServerSocket;
+			mServerSocket = nullptr;
+		}
+	}
 }

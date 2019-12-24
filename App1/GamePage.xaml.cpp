@@ -184,6 +184,7 @@ void GamePage::updateBoard() {
 void GamePage::showLostDialog() {
 	create_task(LoseDialog->ShowAsync()).then([this](ContentDialogResult res)
 		{
+			mGame->closeGame();
 			auto rootFrame = dynamic_cast<Windows::UI::Xaml::Controls::Frame^>(Window::Current->Content);
 			if (!rootFrame->Navigate(TypeName(MainPage::typeid))) {
 				OutputDebugString(L"Failed to navigate to settings screen\n");
@@ -194,6 +195,7 @@ void GamePage::showLostDialog() {
 void GamePage::showWinDialog() {
 	create_task(WinDialog->ShowAsync()).then([this](ContentDialogResult res)
 		{
+			mGame->closeGame();
 			auto rootFrame = dynamic_cast<Windows::UI::Xaml::Controls::Frame^>(Window::Current->Content);
 			if (!rootFrame->Navigate(TypeName(MainPage::typeid))) {
 				OutputDebugString(L"Failed to navigate to settings screen\n");
