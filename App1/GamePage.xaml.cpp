@@ -117,10 +117,18 @@ void GamePage::ChipButtonClick(Platform::Object^ sender, Windows::UI::Xaml::Inpu
 		int y = 7 - BoardGrid->GetRow((Image^)sender);
 		if (!isAnyChipSelected) {
 			if ((*(*mCellBoard)[y])[x]->chip != nullptr && mMoveMap->count(std::pair<int, int>(x, y)) > 0) {
-				if ((*(*mCellBoard)[y])[x]->chip->colour == GameSide::Brown)
-					((Image^)sender)->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/Brown-selected.png"));
-				else
-					((Image^)sender)->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/White-selected.png"));
+				if ((*(*mCellBoard)[y])[x]->chip->colour == GameSide::Brown) {
+					if ((*(*mCellBoard)[y])[x]->chip->type == ChipType::Regular)
+						((Image^)sender)->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/Brown-selected.png"));
+					else
+						((Image^)sender)->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/Brown-crown-selected.png"));
+				}
+				else {
+					if ((*(*mCellBoard)[y])[x]->chip->type == ChipType::Regular)
+						((Image^)sender)->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/White-selected.png"));
+					else
+						((Image^)sender)->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/White-crown-selected.png"));
+				}
 				isAnyChipSelected = true;
 				selectedChip.first = x;
 				selectedChip.second = y;
@@ -149,10 +157,18 @@ void GamePage::updateBoard() {
 		int x = BoardGrid->GetColumn(timg);
 		int y = 7 -  BoardGrid->GetRow(timg);
 		if ((*(*mCellBoard)[y])[x]->chip != nullptr) {
-			if((*(*mCellBoard)[y])[x]->chip->colour == GameSide::Brown)
-				timg->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/Brown.png"));
-			else
-				timg->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/White.png"));
+			if ((*(*mCellBoard)[y])[x]->chip->colour == GameSide::Brown) {
+				if ((*(*mCellBoard)[y])[x]->chip->type == ChipType::Regular)
+					timg->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/Brown.png"));
+				else
+					timg->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/Brown-crown.png"));
+			}
+			else {
+				if ((*(*mCellBoard)[y])[x]->chip->type == ChipType::Regular)
+					timg->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/White.png"));
+				else
+					timg->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/White-crown.png"));
+			}
 		}
 		else
 			timg->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/Blank.png"));
