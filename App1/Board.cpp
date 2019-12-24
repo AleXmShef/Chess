@@ -371,7 +371,7 @@ void Board::move(Move^ move) {
 	if (move->toXY.second == 7) {
 		(*(*mCellBoard)[move->toXY.second])[move->toXY.first]->chip->type = ChipType::Queen;
 	}
-	int opponentChips;
+	int opponentChips = 0;
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
 			if ((*(*mCellBoard)[i])[j]->chip != nullptr)
@@ -406,7 +406,7 @@ void Board::moveFromJson(JsonObject^ jsonMove) {
 	if (toY == 0) {
 		(*(*mCellBoard)[toY])[toX]->chip->type = ChipType::Queen;
 	}
-	int myChips;
+	int myChips = 0;
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
 			if ((*(*mCellBoard)[i])[j]->chip != nullptr)
