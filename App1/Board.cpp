@@ -93,6 +93,7 @@ void Board::moveAvailibilityPass() {
 							tmove->cuttedChip = (*(*mCellBoard)[k - 1])[l - 1]->chip;
 							moveVec->push_back(tmove);
 						}
+						break;
 					}
 					case ChipType::Queen:
 					{
@@ -156,6 +157,7 @@ void Board::moveAvailibilityPass() {
 							tmove->cuttedChip = (*(*mCellBoard)[k - 1])[l - 1]->chip;
 							moveVec->push_back(tmove);
 						}
+						break;
 					}
 					}
 				}
