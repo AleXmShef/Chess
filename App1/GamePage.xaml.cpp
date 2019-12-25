@@ -182,6 +182,9 @@ void GamePage::ChipButtonClick(Platform::Object^ sender, Windows::UI::Xaml::Inpu
 									selectedMoves->push_back(std::pair<int, int>(xC, yC));
 								}
 							}
+							else {
+								mBoard->move(movesStack);
+							}
 						}
 					}
 				}
