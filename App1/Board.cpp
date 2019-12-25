@@ -20,7 +20,6 @@ Board::Board() {
 };
 
 void Board::moveAvailibilityPass() {
-	//mMoveAvailibilityPassMap->clear();
 	mMoveAvailibilityPassMap = new std::map<std::pair<int, int>, std::vector<Move^>*>;
 	bool areCutting = false;
 	for (int k = 0; k < 8; k++) {
@@ -440,7 +439,7 @@ std::vector<Move^>* Board::findMovesForCurrentChip(std::pair<int, int> chip,std:
 			tmove->cuttedChip = (*(*mCellBoard)[k + 1])[l - 1]->chip;
 			moveVec->push_back(tmove);
 		}
-		if (k - 2 >= 0 && l + 2 < 8 && (*(*mCellBoard)[k - 1])[l + 1]->chip != nullptr && (*(*mCellBoard)[k - 2])[l + 2]->chip && (*(*mCellBoard)[k - 1])[l + 1]->chip->colour != mGameSide && k - 1 != exclude.second && l + 1 != exclude.first) {
+		if (k - 2 >= 0 && l + 2 < 8 && (*(*mCellBoard)[k - 1])[l + 1]->chip != nullptr && (*(*mCellBoard)[k - 2])[l + 2]->chip == nullptr && (*(*mCellBoard)[k - 1])[l + 1]->chip->colour != mGameSide && k - 1 != exclude.second && l + 1 != exclude.first) {
 			auto tmove = ref new Move();
 			tmove->fromXY.first = l;
 			tmove->fromXY.second = k;
@@ -450,7 +449,7 @@ std::vector<Move^>* Board::findMovesForCurrentChip(std::pair<int, int> chip,std:
 			tmove->cuttedChip = (*(*mCellBoard)[k - 1])[l + 1]->chip;
 			moveVec->push_back(tmove);
 		}
-		if ((k - 2) >= 0 && (l - 2) >= 0 && (*(*mCellBoard)[k - 1])[l - 1]->chip != nullptr && (*(*mCellBoard)[k - 2])[l - 2]->chip && (*(*mCellBoard)[k - 1])[l - 1]->chip->colour != mGameSide && k - 1 != exclude.second && l - 1 != exclude.first) {
+		if ((k - 2) >= 0 && (l - 2) >= 0 && (*(*mCellBoard)[k - 1])[l - 1]->chip != nullptr && (*(*mCellBoard)[k - 2])[l - 2]->chip == nullptr && (*(*mCellBoard)[k - 1])[l - 1]->chip->colour != mGameSide && k - 1 != exclude.second && l - 1 != exclude.first) {
 			auto tmove = ref new Move();
 			tmove->fromXY.first = l;
 			tmove->fromXY.second = k;
