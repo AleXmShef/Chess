@@ -105,8 +105,9 @@ void Game::serverRequestHandler() {
 			auto responseJson = requestHandler(requestJson);
 			if (responseJson != nullptr) {
 				sendJson(responseJson, mSocket);
-				serverRequestHandler();
+				
 			}
+			serverRequestHandler();
 		});
 }
 
