@@ -169,7 +169,7 @@ void GamePage::ChipButtonClick(Platform::Object^ sender, Windows::UI::Xaml::Inpu
 								int yCC;
 								for (int h = 0; h < 8; h++) {
 									for (int j = 0; j < 8; j++) {
-										if ((*(*mCellBoard)[i])[j]->chip == (*mMoveVec)[i]->cuttedChip) {
+										if ((*(*mCellBoard)[h])[j]->chip == (*mMoveVec)[i]->cuttedChip) {
 											xCC = j;
 											yCC = h;
 										}
