@@ -175,10 +175,11 @@ void GamePage::ChipButtonClick(Platform::Object^ sender, Windows::UI::Xaml::Inpu
 										}
 									}
 								}
-								if (mBoard->findMovesForCurrentChip(std::pair<int, int>(xC, yC), std::pair<int, int>(xCC, yCC), mChip->type)->empty())
+								auto t = mBoard->findMovesForCurrentChip(std::pair<int, int>(xC, yC), std::pair<int, int>(xCC, yCC), mChip->type);
+								if (t->empty())
 									mBoard->move(movesStack);
 								else {
-									movesForSelectedChip = mBoard->findMovesForCurrentChip(std::pair<int, int>(xC, yC), std::pair<int, int>(xCC, yCC), mChip->type);
+									movesForSelectedChip = t;
 									selectedMoves->push_back(std::pair<int, int>(xC, yC));
 								}
 							}
