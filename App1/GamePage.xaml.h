@@ -31,6 +31,9 @@ namespace App1
 	private:
 		bool isAnyChipSelected = false;
 		std::pair<int, int> selectedChip;
+		std::vector<std::pair<int, int>>* selectedMoves = new std::vector<std::pair<int, int>>;
+		std::vector<Move^>* movesStack = new std::vector<Move^>;
+		std::vector<Move^>* movesForSelectedChip = new std::vector<Move^>;
 		Game^ mGame;
 		Board^ mBoard;
 		std::vector<std::vector<Image^>*>* mBoardVector;

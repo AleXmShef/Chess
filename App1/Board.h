@@ -24,14 +24,14 @@ namespace App1 {
 	};
 	ref class Board sealed
 	{
-	public:
-		void move(Move^ move);
+	internal:
+		void move(std::vector<Move^>* moves);
 		void moveFromJson(Windows::Data::Json::JsonObject^ jsonMove);
 		static Board^ getInstance();
 		void populateBoard(GameSide side);
 		void moveAvailibilityPass();
 	internal:
-		std::vector<std::pair<int, int>> findMovesForCurrentChip();
+		std::vector<Move^>* findMovesForCurrentChip(std::pair<int, int> chip, std::pair<int,int> exclude, ChipType type);
 		std::map<std::pair<int, int>, std::vector<Move^>*>* getMoveAvailibilityPassMap();
 		std::vector<std::vector<Cell^>*>* getCellBoard();
 	private:

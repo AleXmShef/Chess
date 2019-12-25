@@ -77,13 +77,22 @@ void GamePage::ChipOnFocus(Platform::Object^ sender, Windows::UI::Xaml::Input::P
 			}
 		}
 		else {
-			int xC = selectedChip.first;
-			int yC = selectedChip.second;
-			auto mChip = (*(*mCellBoard)[yC])[xC]->chip;
-			auto mMoveVec = mMoveMap->at(std::pair<int, int>(xC, yC));
-			for (int i = 0; i < mMoveVec->size(); i++) {
-				if ((*mMoveVec)[i]->toXY.first == x && (*mMoveVec)[i]->toXY.second == y)
-					((Image^)sender)->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/Blank-selected.png"));
+			if (movesStack->empty()) {
+				int xC = selectedChip.first;
+				int yC = selectedChip.second;
+				auto mChip = (*(*mCellBoard)[yC])[xC]->chip;
+				auto mMoveVec = mMoveMap->at(std::pair<int, int>(xC, yC));
+				for (int i = 0; i < mMoveVec->size(); i++) {
+					if ((*mMoveVec)[i]->toXY.first == x && (*mMoveVec)[i]->toXY.second == y)
+						((Image^)sender)->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/Blank-selected.png"));
+				}
+			}
+			else {
+				for (int i = 0; i < movesForSelectedChip->size(); i++) {
+					if ((*movesForSelectedChip)[i]->fromXY.first == x && (*movesForSelectedChip)[i]->fromXY.second == y) {
+						((Image^)sender)->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/Blank-selected.png"));
+					}
+				}
 			}
 		}
 	}
@@ -93,7 +102,14 @@ void GamePage::ChipOffFocus(Platform::Object^ sender, Windows::UI::Xaml::Input::
 	if (mGame->getGameStatus() == gameStatus::MyMove) {
 		int x = BoardGrid->GetColumn((Image^)sender);
 		int y = 7 - BoardGrid->GetRow((Image^)sender);
-		if ((isAnyChipSelected == true && x != selectedChip.first && y != selectedChip.second) || isAnyChipSelected == false) {
+		bool flag  = 0;
+		if (!selectedMoves->empty()) {
+			for (int i = 0; i < selectedMoves->size(); i++) {
+				if ((*selectedMoves)[i].first == x && (*selectedMoves)[i].second == y)
+					flag = 1;
+			}
+		}
+		if (((isAnyChipSelected == true && x != selectedChip.first && y != selectedChip.second) || isAnyChipSelected == false) && !flag) {
 			if ((*(*mCellBoard)[y])[x]->chip == nullptr)
 				((Image^)sender)->Source = ref new BitmapImage(ref new Uri("ms-appx:///Assets/Blank.png"));
 			else if ((*(*mCellBoard)[y])[x]->chip->colour == GameSide::Brown) {
@@ -142,11 +158,59 @@ void GamePage::ChipButtonClick(Platform::Object^ sender, Windows::UI::Xaml::Inpu
 				isAnyChipSelected = false;
 			}
 			else {
-				auto mChip = (*(*mCellBoard)[yC])[xC]->chip;
-				auto mMoveVec = mMoveMap->at(std::pair<int, int>(xC, yC));
-				for (int i = 0; i < mMoveVec->size(); i++) {
-					if ((*mMoveVec)[i]->toXY.first == x && (*mMoveVec)[i]->toXY.second == y)
-						mBoard->move((*mMoveVec)[i]);
+				if (movesStack->empty()) {
+					auto mChip = (*(*mCellBoard)[yC])[xC]->chip;
+					auto mMoveVec = mMoveMap->at(std::pair<int, int>(xC, yC));
+					for (int i = 0; i < mMoveVec->size(); i++) {
+						if ((*mMoveVec)[i]->toXY.first == x && (*mMoveVec)[i]->toXY.second == y) {
+							movesStack->push_back((*mMoveVec)[i]);
+							if ((*mMoveVec)[i]->isCutting) {
+								int xCC;
+								int yCC;
+								for (int h = 0; h < 8; h++) {
+									for (int j = 0; j < 8; j++) {
+										if ((*(*mCellBoard)[i])[j]->chip == (*mMoveVec)[i]->cuttedChip) {
+											xCC = j;
+											yCC = h;
+										}
+									}
+								}
+								if (mBoard->findMovesForCurrentChip(std::pair<int, int>(xC, yC), std::pair<int, int>(xCC, yCC), mChip->type)->empty())
+									mBoard->move(movesStack);
+								else {
+									movesForSelectedChip = mBoard->findMovesForCurrentChip(std::pair<int, int>(xC, yC), std::pair<int, int>(xCC, yCC), mChip->type);
+									selectedMoves->push_back(std::pair<int, int>(xC, yC));
+								}
+							}
+						}
+					}
+				}
+				else {
+					for (int i = 0; i < movesForSelectedChip->size(); i++) {
+						if ((*movesForSelectedChip)[i]->toXY.first == x && (*movesForSelectedChip)[i]->toXY.second == y) {
+							movesStack->push_back((*movesForSelectedChip)[i]);
+							int xCC;
+							int yCC;
+							for (int i = 0; i < 8; i++) {
+								for (int j = 0; j < 8; j++) {
+									if ((*(*mCellBoard)[i])[j]->chip == movesStack->back()->cuttedChip) {
+										xCC = j;
+										yCC = i;
+									}
+								}
+							}
+							int xC = movesStack->back()->fromXY.first;
+							int yC = movesStack->back()->fromXY.second;
+							auto t = mBoard->findMovesForCurrentChip(std::pair<int, int>(xC, yC), std::pair<int, int>(xCC, yCC), (*(*mCellBoard)[movesStack->front()->fromXY.second])[movesStack->front()->fromXY.first]->chip->type);
+							if (t->empty()) {
+								mBoard->move(movesStack);
+							}
+							else {
+								movesForSelectedChip = t;
+								selectedMoves->push_back(std::pair<int, int>(xC, yC));
+							}
+						}
+					}
 				}
 			}
 		}

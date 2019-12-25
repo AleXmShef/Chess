@@ -165,12 +165,16 @@ JsonObject^ Game::requestHandler(JsonObject^ jsonRequest) {
 		if (requestContent == "MoveReady") {
 			mBoard->moveFromJson(jsonRequest);
 			mGameStatus = gameStatus::MyMove;
-			mGamePage->Dispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([this]() {
+			create_task(mGamePage->Dispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([this]() {
 				mGamePage->updateBoard();
-			}));
-			auto responseJson = ref new JsonObject();
-			responseJson->Insert("responseType", JsonValue::CreateStringValue("OK boomer"));
-			return responseJson;
+				}))).then([this]()
+					{
+						if (mSocket != nullptr) {
+							auto responseJson = ref new JsonObject();
+							responseJson->Insert("responseType", JsonValue::CreateStringValue("OK boomer"));
+							return responseJson;
+						}
+					});
 		}
 	}
 	else if (requestType == "YourMove") {
@@ -247,13 +251,17 @@ void Game::responseHandler(JsonObject^ jsonResponse) {
 		else if (content == "MoveReady") {
 			mGameStatus = gameStatus::MyMove;
 			mBoard->moveFromJson(jsonResponse);
-			mGamePage->Dispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([this]() {
-				this->mGamePage->updateBoard();
-			}));
+			create_task(mGamePage->Dispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([this]() {
+				mGamePage->updateBoard();
+				}))).then([this]()
+					{
+						if (mSocket != nullptr) {
+							auto responseJson = ref new JsonObject();
+							responseJson->Insert("responseType", JsonValue::CreateStringValue("OK boomer"));
+							return responseJson;
+						}
+					});
 		}
-	}
-	else if (responseType == "Disconnect") {
-		closeGame();
 	}
 }
 
@@ -331,11 +339,16 @@ GameSide Game::getGameSide() {
 }
 
 void Game::awaitMoveClient() {
-	recieveJson(mSocket).then([this](JsonObject^ resp) 
-		{
-			responseHandler(resp);
-			awaitMoveClient();
-		});
+	try {
+		recieveJson(mSocket).then([this](JsonObject^ resp)
+			{
+				responseHandler(resp);
+				awaitMoveClient();
+			});
+	}
+	catch (task_canceled&) {
+		return (void)0;
+	}
 }
 
 void Game::sendMove(JsonObject^ jsonMove) {
