@@ -219,6 +219,9 @@ void GamePage::ChipButtonClick(Platform::Object^ sender, Windows::UI::Xaml::Inpu
 
 void GamePage::updateBoard() {
 	isAnyChipSelected = false;
+	selectedMoves->clear();
+	movesStack->clear();
+	movesForSelectedChip->clear();
 	mCellBoard = mBoard->getCellBoard();
 	mBoard->moveAvailibilityPass();
 	mMoveMap = mBoard->getMoveAvailibilityPassMap();
